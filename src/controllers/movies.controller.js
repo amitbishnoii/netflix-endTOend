@@ -9,7 +9,12 @@ export const getMovieByID = (req, res) => {
     const movie = movies.filter((movie) => {
         return movie.id == ID;
     });
-    res.json(movie);
+
+    if (movie.length === 0) {
+        res.status(404).json("Movie not Found!");
+    } else {
+        res.json(movie);
+    }
 };
 
 export const updateMovie = (req, res) => {
@@ -27,6 +32,14 @@ export const addMovie = (req, res) => {
     const { movieName } = req.body;
     const { movieYear } = req.body;
 
-    movies.push({ id: movies.length + 1, name: movieName, year: movieYear });
-    res.json(movies)
+    if (!movieName) {
+        res.status(400).json("Title is Required!");
+    } else {
+        movies.push({
+            id: movies.length + 1,
+            name: movieName,
+            year: movieYear,
+        });
+        res.json(movies);
+    }
 };
