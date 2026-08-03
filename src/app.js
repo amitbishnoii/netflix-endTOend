@@ -8,10 +8,9 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
-
-app.use("/api/movies", movieRouter)
+app.use(express.json());
+app.use("/api/movies", movieRouter);
 
 app.get("/", (req, res) => {
     res.render("login");
