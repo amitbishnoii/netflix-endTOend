@@ -2,6 +2,7 @@ import express from "express";
 import { fileURLToPath } from "url";
 import path from "path";
 import movieRouter from "./routes/movies.route.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
 const app = express();
 
@@ -24,5 +25,7 @@ app.post("/login", (req, res) => {
         res.send("error");
     }
 });
+
+app.use(errorHandler);
 
 export default app;
