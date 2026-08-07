@@ -55,3 +55,31 @@ export const addMovie = (req, res) => {
         next(err);
     }
 };
+
+export const editMovie = (req, res) => {
+    try {
+        const {movieID, editInfo} = req.body;
+        if (!movieID) {
+            res.status(400).json("id is Required");
+        }
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const deleteMovie = (req, res) => {
+    try {
+        const { movieID } = req.params;
+
+        if (!movieID) {
+            res.status(400).json("id is Required");
+        } else {
+            let results = movies.filter((movie) => {
+                return movie.id !== parseInt(movieID);
+            });
+            res.status(200).send(results);
+        }
+    } catch (error) {
+        next(error);
+    }
+};
