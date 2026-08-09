@@ -1,4 +1,6 @@
-import { movies } from "../data/movies.js";
+let movies = [
+    
+]
 
 export const getAllMovies = (req, res) => {
     res.json(movies);
@@ -61,6 +63,8 @@ export const editMovie = (req, res) => {
         const {movieID, editInfo} = req.body;
         if (!movieID) {
             res.status(400).json("id is Required");
+        } else {
+            res.status(200).json({editInfo, success: true})
         }
     } catch (error) {
         next(error)
