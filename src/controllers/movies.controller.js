@@ -1,19 +1,18 @@
-let movies = [
-    
-]
+import Movie from "../models/Movie.js";
 
 export const getAllMovies = (req, res) => {
-    res.json(movies);
+    // try {
+    // } catch (error) {
+    // }
 };
 
-export const getMovieByID = (req, res) => {
+export const getMovieByName = async (req, res) => {
     try {
-        const ID = req.params.id;
-        const movie = movies.filter((movie) => {
-            return movie.id == ID;
-        });
+        const name = req.params.name;
+        const movie = await Movie.findOne({ name: name });
+        console.log(name);
 
-        if (movie.length === 0) {
+        if (!movie) {
             res.status(404).json("Movie not Found!");
         } else {
             res.json(movie);
@@ -23,65 +22,59 @@ export const getMovieByID = (req, res) => {
     }
 };
 
-export const updateMovie = (req, res) => {
+export const addMovie = async (req, res) => {
     try {
-        const ID = req.params.id;
-        const name = req.body.name;
-        const movie = movies.filter((movie) => {
-            return movie.id == ID;
-        });
-
-        movie.name = name;
-        res.json(movie);
-    } catch (err) {
-        next(err);
-    }
-};
-
-export const addMovie = (req, res) => {
-    try {
-        const { movieName } = req.body;
-        const { movieYear } = req.body;
+        const { movieName, movieYear, genre } = req.body;
 
         if (!movieName) {
             res.status(400).json("Title is Required!");
         } else {
-            movies.push({
-                id: movies.length + 1,
+            const movie = await Movie.create({
                 name: movieName,
                 year: movieYear,
+                genre: genre,
             });
-            res.json(movies);
+
+            res.json(movie);
         }
     } catch (err) {
         next(err);
     }
 };
 
-export const editMovie = (req, res) => {
+export const editMovie = async (req, res) => {
     try {
-        const {movieID, editInfo} = req.body;
-        if (!movieID) {
-            res.status(400).json("id is Required");
+        const { movieName, movieYear } = req.body;
+
+        const updateMovie = await Movie.findOneAndUpdate(
+            { name: movieName },
+            { year: movieYear },
+            { new: true },
+        );
+
+        if (!updateMovie) {
+            res.send("updation failed");
         } else {
-            res.status(200).json({editInfo, success: true})
+            res.send(updateMovie);
         }
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};
 
-export const deleteMovie = (req, res) => {
+export const deleteMovie = async (req, res) => {
     try {
-        const { movieID } = req.params;
+        const { movieName } = req.params;
+        console.log(movieName);
 
-        if (!movieID) {
+        const movieDeletion = await Movie.findOneAndDelete({
+            name: movieName,
+        });
+
+        if (!movieDeletion) {
             res.status(400).json("id is Required");
         } else {
-            let results = movies.filter((movie) => {
-                return movie.id !== parseInt(movieID);
-            });
-            res.status(200).send(results);
+            res.status(200).json(movieDeletion);
         }
     } catch (error) {
         next(error);
