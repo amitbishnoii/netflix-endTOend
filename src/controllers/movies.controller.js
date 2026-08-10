@@ -1,12 +1,19 @@
 import Movie from "../models/Movie.js";
 
-export const getAllMovies = (req, res) => {
-    // try {
-    // } catch (error) {
-    // }
+export const getAllMovies = async (req, res, next) => {
+    try {
+        const movies = await Movie.find();
+        if (movies) {
+            res.send(movies);
+        } else {
+            res.send("no movies found!")
+        }
+    } catch (error) {
+        next(err)
+    }
 };
 
-export const getMovieByName = async (req, res) => {
+export const getMovieByName = async (req, res, next) => {
     try {
         const name = req.params.name;
         const movie = await Movie.findOne({ name: name });
@@ -22,7 +29,7 @@ export const getMovieByName = async (req, res) => {
     }
 };
 
-export const addMovie = async (req, res) => {
+export const addMovie = async (req, res, next) => {
     try {
         const { movieName, movieYear, genre } = req.body;
 
@@ -42,7 +49,7 @@ export const addMovie = async (req, res) => {
     }
 };
 
-export const editMovie = async (req, res) => {
+export const editMovie = async (req, res, next) => {
     try {
         const { movieName, movieYear } = req.body;
 
@@ -62,7 +69,7 @@ export const editMovie = async (req, res) => {
     }
 };
 
-export const deleteMovie = async (req, res) => {
+export const deleteMovie = async (req, res, next) => {
     try {
         const { movieName } = req.params;
         console.log(movieName);
