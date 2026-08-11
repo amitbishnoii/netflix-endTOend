@@ -5,8 +5,8 @@ const userModel = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        min: [8, "minimum 8 characters are required"],
-        max: [55, "limit exceeded"],
+        minLength: [8, "minimum 8 characters are required"],
+        maxLength: [55, "limit exceeded"],
         trim: true,
     },
     email: { type: String, required: true, trim: true },

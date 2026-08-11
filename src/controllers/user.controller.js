@@ -39,7 +39,21 @@ export const getUser = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
     try {
         const username = req.params.username;
+        const age = req.body.age;
+
+        const updatedUser = await User.findOneAndUpdate(
+            { username: username },
+            { age: age },
+            { returnDocument: "after", runValidators: true },
+        );
+
+        if (!updatedUser) {
+            res.send("error");
+        } else {
+            res.send(updatedUser);
+        }
     } catch (error) {
+        console.log(req.body.age);
         next(error);
     }
 };
