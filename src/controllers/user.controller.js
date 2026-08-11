@@ -2,10 +2,12 @@ import User from "../models/User.js";
 
 export const createProfile = async (req, res, next) => {
     try {
-        const { username, email } = req.body;
+        const { username, email, password, age } = req.body;
         const newuser = await User.create({
             username: username,
             email: email,
+            age: age,
+            password: password,
         });
         if (!newuser) {
             res.send("error");
@@ -52,7 +54,7 @@ export const loginUser = async (req, res, next) => {
 
 export const getLessThanThirty = async (req, res, next) => {
     try {
-        const users = await User.find({ age: { $eq: 30 } });
+        const users = await User.find({ username: { $regex: /^a/i } });
         res.send(users);
     } catch (error) {
         next(error);
