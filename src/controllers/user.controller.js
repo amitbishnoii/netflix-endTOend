@@ -33,3 +33,28 @@ export const getUser = async (req, res, next) => {
         next(error);
     }
 };
+
+export const updateUser = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const loginUser = async (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getLessThanThirty = async (req, res, next) => {
+    try {
+        const users = await User.find({ age: { $eq: 30 } });
+        res.send(users);
+    } catch (error) {
+        next(error);
+    }
+};
