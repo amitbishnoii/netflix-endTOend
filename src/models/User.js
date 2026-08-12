@@ -1,7 +1,12 @@
 import mongoose from "mongoose";
 
-const userModel = new mongoose.Schema({
-    username: { type: String, required: true, trim: true },
+const userSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+
     password: {
         type: String,
         required: true,
@@ -9,16 +14,34 @@ const userModel = new mongoose.Schema({
         maxLength: [55, "limit exceeded"],
         trim: true,
     },
-    email: { type: String, required: true, trim: true },
+
+    email: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+
     age: {
         type: Number,
         required: true,
         min: [12, "min age is 12 years"],
         max: [100, "max age is 100"],
     },
-    role: { type: String, enum: ["user", "admin"], default: "user" },
+
+    role: {
+        type: String,
+        enum: ["user", "admin"],
+        default: "user",
+    },
+
+    favouriteMovies: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Movie",
+        },
+    ],
 });
 
-const User = mongoose.model("User", userModel);
+const User = mongoose.model("User", userSchema);
 
 export default User;
