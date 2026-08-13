@@ -36,8 +36,7 @@ const userSchema = new mongoose.Schema({
 
     favouriteMovies: [
         {
-            name: String,
-            date: { type: Date, date: Date.now() },
+            movie: { type: mongoose.Schema.Types.ObjectId, ref: "Movie" },
         },
     ],
 });
