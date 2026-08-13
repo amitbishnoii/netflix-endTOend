@@ -4,17 +4,17 @@ import {
     getUser,
     updateUser,
     loginUser,
-    getLessThanThirty,
+    addFavourite,
 } from "../controllers/user.controller.js";
 import { errorHandler } from "../middlewares/errorHandler.js";
 import { loggerMiddleware } from "../middlewares/loggerMiddleware.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/less", getLessThanThirty);
 userRouter.get("/login", loginUser);
 userRouter.get("/:username", getUser);
 userRouter.post("/create", createProfile);
+userRouter.post("/:username/add-favourite", addFavourite);
 userRouter.put("/edit/:username", updateUser);
 
 export default userRouter;

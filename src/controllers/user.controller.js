@@ -66,10 +66,17 @@ export const loginUser = async (req, res, next) => {
     }
 };
 
-export const getLessThanThirty = async (req, res, next) => {
+export const addFavourite = async (req, res, next) => {
     try {
-        const users = await User.find({ username: { $regex: /^a/i } });
-        res.send(users);
+        const { username } = req.params;
+
+        const user = await User.findOneAndUpdate(
+            { username: username },
+            { $push: { favouriteMovies: { name: req.body.movieName } } },
+            { returnDocument: "after" },
+        );
+
+        res.send(user);
     } catch (error) {
         next(error);
     }
