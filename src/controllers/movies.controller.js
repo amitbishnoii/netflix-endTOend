@@ -1,4 +1,5 @@
 import Movie from "../models/Movie.js";
+import User from "../models/User.js";
 
 export const getAllMovies = async (req, res, next) => {
     try {
@@ -6,10 +7,10 @@ export const getAllMovies = async (req, res, next) => {
         if (movies) {
             res.send(movies);
         } else {
-            res.send("no movies found!")
+            res.send("no movies found!");
         }
     } catch (error) {
-        next(err)
+        next(err);
     }
 };
 
@@ -77,6 +78,11 @@ export const deleteMovie = async (req, res, next) => {
         const movieDeletion = await Movie.findOneAndDelete({
             name: movieName,
         });
+
+        await User.updateMany(
+            {},
+            { $pull: { favouriteMovies: { movie: movieDeletion._id } } },
+        );
 
         if (!movieDeletion) {
             res.status(400).json("id is Required");

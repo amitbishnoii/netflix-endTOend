@@ -27,7 +27,9 @@ export const getUser = async (req, res, next) => {
         const username = req.params.username;
         const user = await User.findOne({
             username: username,
-        }).populate("favouriteMovies.movie");
+        })
+            .populate("favouriteMovies.movie", "name year")
+            .select("-password -email -role");
 
         if (!user) {
             res.send("error");
