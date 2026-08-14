@@ -3,7 +3,12 @@ import User from "../models/User.js";
 
 export const getAllMovies = async (req, res, next) => {
     try {
-        const movies = await Movie.find();
+        const page = parseInt(req.query.page, 10) || 1;
+        const limit = parseInt(req.query.limit, 10) || 10;
+        const skip = (page - 1) * limit;
+
+        const movies = await Movie.find().skip(skip).limit(limit);
+
         if (movies) {
             res.send(movies);
         } else {
