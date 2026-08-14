@@ -7,15 +7,20 @@ export const getAllMovies = async (req, res, next) => {
         const limit = parseInt(req.query.limit, 10) || 10;
         const skip = (page - 1) * limit;
 
-        const movies = await Movie.find().skip(skip).limit(limit);
+        const [movies, documents] = await Promise.all([
+            Movie.find().skip(skip).limit(limit),
+            Movie.countDocuments(),
+        ]);
 
-        if (movies) {
-            res.send(movies);
+        const countPages = Math.ceil(documents / limit);
+
+        if (movies.length !== 0) {
+            res.send({ movies, countPages });
         } else {
             res.send("no movies found!");
         }
     } catch (error) {
-        next(err);
+        next(error);
     }
 };
 
