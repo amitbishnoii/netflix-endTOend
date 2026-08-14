@@ -4,12 +4,14 @@ import Movie from "../models/Movie.js";
 export const createProfile = async (req, res, next) => {
     try {
         const { username, email, password, age } = req.body;
+
         const newuser = await User.create({
             username: username,
             email: email,
             age: age,
             password: password,
         });
+
         if (!newuser) {
             res.send("error");
         } else {
@@ -25,7 +27,7 @@ export const getUser = async (req, res, next) => {
         const username = req.params.username;
         const user = await User.findOne({
             username: username,
-        });
+        }).populate("favouriteMovies.movie");
 
         if (!user) {
             res.send("error");
@@ -54,7 +56,6 @@ export const updateUser = async (req, res, next) => {
             res.send(updatedUser);
         }
     } catch (error) {
-        console.log(req.body.age);
         next(error);
     }
 };
@@ -85,11 +86,10 @@ export const addFavourite = async (req, res, next) => {
             return res.send("movie already favourite");
         }
 
-        user.favouriteMovies.push({movie: movie._id});
+        user.favouriteMovies.push({ movie: movie._id });
         await user.save();
 
         res.send(user);
-
     } catch (error) {
         next(error);
     }
