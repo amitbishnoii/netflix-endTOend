@@ -1,6 +1,6 @@
 import Movie from "../models/Movie.js";
 import User from "../models/User.js";
-import AppError from "../utils/AppError.js";
+import { AppError } from "../utils/AppError.js";
 
 export const getAllMovies = async (req, res, next) => {
     try {

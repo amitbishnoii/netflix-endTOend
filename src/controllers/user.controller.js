@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import Movie from "../models/Movie.js";
 import { AppError } from "../utils/AppError.js";
@@ -6,14 +7,33 @@ export const createProfile = async (req, res, next) => {
     try {
         const { username, email, password, age } = req.body;
 
+        if (!username || !email || !password || !age) {
+            return next(new AppError("Please fill all the fields!", 400));
+        }
+
+        if (password.length < 8) {
+            return next(
+                new AppError("Password should be atleast 8 characters.", 400),
+            );
+        }
+
+        const userExists = await User.findOne({ username: username });
+        if (userExists) {
+            return next(new AppError("username taken!", 409));
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
         const newuser = await User.create({
             username: username,
             email: email,
             age: age,
-            password: password,
+            password: hashedPassword,
         });
 
-        res.status(201).send({ success: true, newuser });
+        const {password: _, ...userData} = newuser.toObject();
+
+        res.status(201).send({ success: true, data: userData });
     } catch (error) {
         next(error);
     }

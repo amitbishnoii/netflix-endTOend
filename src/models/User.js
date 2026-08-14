@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         minLength: [8, "minimum 8 characters are required"],
-        maxLength: [55, "limit exceeded"],
         trim: true,
     },
 
