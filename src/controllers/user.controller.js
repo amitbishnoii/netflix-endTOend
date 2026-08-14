@@ -1,5 +1,6 @@
 import User from "../models/User.js";
 import Movie from "../models/Movie.js";
+import { AppError } from "../utils/AppError.js";
 
 export const createProfile = async (req, res, next) => {
     try {
@@ -12,11 +13,7 @@ export const createProfile = async (req, res, next) => {
             password: password,
         });
 
-        if (!newuser) {
-            res.send("error");
-        } else {
-            res.send(newuser);
-        }
+        res.status(201).send({ success: true, newuser });
     } catch (error) {
         next(error);
     }
@@ -32,9 +29,9 @@ export const getUser = async (req, res, next) => {
             .select("-password -email -role");
 
         if (!user) {
-            res.send("error");
+            return next(new AppError("user not found", 404));
         } else {
-            res.send(user);
+            res.status(200).send({ success: true, user });
         }
     } catch (error) {
         next(error);
@@ -43,19 +40,16 @@ export const getUser = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
     try {
-        const username = req.params.username;
-        const age = req.body.age;
-
         const updatedUser = await User.findOneAndUpdate(
-            { username: username },
-            { age: age },
+            { username: req.params.username },
+            { age: req.body.age },
             { returnDocument: "after", runValidators: true },
         );
 
         if (!updatedUser) {
-            res.send("error");
+            return next(new AppError("username not found", 404));
         } else {
-            res.send(updatedUser);
+            res.status(200).send({ success: true, updatedUser });
         }
     } catch (error) {
         next(error);
@@ -72,12 +66,15 @@ export const loginUser = async (req, res, next) => {
 
 export const addFavourite = async (req, res, next) => {
     try {
-        const { username } = req.params;
         const movie = await Movie.findOne({ name: req.body.movieName });
-        const user = await User.findOne({ username: username });
+        const user = await User.findOne({ username: req.params.username });
 
         if (!movie) {
-            return res.status(404).send("movie not found!");
+            return next(new AppError("movie not found", 404));
+        }
+
+        if (!user) {
+            return next(new AppError("user not found", 404));
         }
 
         const alreadyFavourite = user.favouriteMovies.some((obj) => {
@@ -85,13 +82,15 @@ export const addFavourite = async (req, res, next) => {
         });
 
         if (alreadyFavourite) {
-            return res.send("movie already favourite");
+            return next(
+                new AppError("movie already exists in favourites", 400),
+            );
         }
 
         user.favouriteMovies.push({ movie: movie._id });
         await user.save();
 
-        res.send(user);
+        res.status(200).send({ success: true, user });
     } catch (error) {
         next(error);
     }

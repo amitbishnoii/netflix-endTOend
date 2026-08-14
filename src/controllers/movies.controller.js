@@ -1,5 +1,6 @@
 import Movie from "../models/Movie.js";
 import User from "../models/User.js";
+import AppError from "../utils/AppError.js";
 
 export const getAllMovies = async (req, res, next) => {
     try {
@@ -15,9 +16,9 @@ export const getAllMovies = async (req, res, next) => {
         const countPages = Math.ceil(documents / limit);
 
         if (movies.length !== 0) {
-            res.send({ movies, countPages });
+            res.status(200).send({ movies, countPages });
         } else {
-            res.send("no movies found!");
+            res.status(200).send("no movies found");
         }
     } catch (error) {
         next(error);
@@ -28,12 +29,11 @@ export const getMovieByName = async (req, res, next) => {
     try {
         const name = req.params.name;
         const movie = await Movie.findOne({ name: name });
-        console.log(name);
 
         if (!movie) {
-            res.status(404).json("Movie not Found!");
+            return next(new AppError("Movie not found", 404));
         } else {
-            res.json(movie);
+            res.status(200).send(movie);
         }
     } catch (err) {
         next(err);
@@ -45,7 +45,7 @@ export const addMovie = async (req, res, next) => {
         const { movieName, movieYear, genre } = req.body;
 
         if (!movieName) {
-            res.status(400).json("Title is Required!");
+            return next(new AppError("Title is Required", 400));
         } else {
             const movie = await Movie.create({
                 name: movieName,
@@ -53,7 +53,7 @@ export const addMovie = async (req, res, next) => {
                 genre: genre,
             });
 
-            res.json(movie);
+            res.status(200).send(movie);
         }
     } catch (err) {
         next(err);
@@ -67,13 +67,13 @@ export const editMovie = async (req, res, next) => {
         const updateMovie = await Movie.findOneAndUpdate(
             { name: movieName },
             { year: movieYear },
-            { new: true },
+            { returnDocument: "after", runValidators: true },
         );
 
         if (!updateMovie) {
-            res.send("updation failed");
+            return next(new AppError("movie not found", 404));
         } else {
-            res.send(updateMovie);
+            res.status(200).send(updateMovie);
         }
     } catch (error) {
         next(error);
@@ -83,22 +83,21 @@ export const editMovie = async (req, res, next) => {
 export const deleteMovie = async (req, res, next) => {
     try {
         const { movieName } = req.params;
-        console.log(movieName);
 
         const movieDeletion = await Movie.findOneAndDelete({
             name: movieName,
         });
+
+        if (!movieDeletion) {
+            return next(new AppError("Movie not Found", 404));
+        }
 
         await User.updateMany(
             {},
             { $pull: { favouriteMovies: { movie: movieDeletion._id } } },
         );
 
-        if (!movieDeletion) {
-            res.status(400).json("id is Required");
-        } else {
-            res.status(200).json(movieDeletion);
-        }
+        res.status(200).send({ success: true, movieDeletion });
     } catch (error) {
         next(error);
     }
