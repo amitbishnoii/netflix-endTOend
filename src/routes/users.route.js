@@ -10,10 +10,11 @@ import {
 import { errorHandler } from "../middlewares/errorHandler.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { adminRequire } from "../middlewares/adminRequire.js";
+import { rateLimiter } from "../middlewares/rateLimiter.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/login", loginUser);
+userRouter.get("/login", rateLimiter, loginUser);
 userRouter.get("/profile", getProfile);
 userRouter.get("/:username", authMiddleware, adminRequire, getUser);
 userRouter.post("/create", createProfile);

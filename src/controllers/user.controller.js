@@ -36,6 +36,7 @@ export const createProfile = async (req, res, next) => {
         const token = jwt.sign(
             { userID: newuser._id, role: newuser.role },
             process.env.JWT_SECRET,
+            { expiresIn: "7d" },
         );
         const { password: _, ...userData } = newuser.toObject();
 
@@ -103,6 +104,7 @@ export const loginUser = async (req, res, next) => {
         const token = jwt.sign(
             { userID: user._id, role: user.role },
             process.env.JWT_SECRET,
+            { expiresIn: "7d" },
         );
         const { password: _, ...userInfo } = user.toObject();
 
