@@ -9,4 +9,5 @@ export const rateLimiter = rateLimit({
     },
     legacyHeaders: false,
     standardHeaders: true,
+    skipSuccessfulRequests: true,
 });

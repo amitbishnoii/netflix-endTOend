@@ -104,11 +104,17 @@ export const loginUser = async (req, res, next) => {
         const token = jwt.sign(
             { userID: user._id, role: user.role },
             process.env.JWT_SECRET,
+            { expiresIn: "15m" },
+        );
+
+        const refreshToken = jwt.sign(
+            { userID: user._id },
+            process.env.JWT_SECRET_REFRESH,
             { expiresIn: "7d" },
         );
         const { password: _, ...userInfo } = user.toObject();
 
-        res.status(200).send({ success: true, token, userInfo });
+        res.status(200).send({ success: true, token, refreshToken, userInfo });
     } catch (error) {
         next(error);
     }
@@ -158,6 +164,31 @@ export const getProfile = async (req, res, next) => {
         } else {
             res.status(200).send({ success: true, userInfo });
         }
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const refreshToken = async (req, res, next) => {
+    try {
+        const refresh = req.body.refresh;
+        if (!refresh) {
+            return next(new AppError("Refresh token is required", 401));
+        }
+
+        const decode = jwt.verify(refresh, process.env.JWT_SECRET_REFRESH);
+        const userInfo = await User.findById(decode.userID);
+
+        if (!userInfo) {
+            return next(new AppError("User no longer exists", 401));
+        }
+
+        const token = jwt.sign(
+            { userID: userInfo._id, role: userInfo.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "15m" },
+        );
+        res.status(200).send({ success: true, token });
     } catch (error) {
         next(error);
     }
