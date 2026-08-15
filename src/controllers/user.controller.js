@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 import Movie from "../models/Movie.js";
@@ -31,9 +32,10 @@ export const createProfile = async (req, res, next) => {
             password: hashedPassword,
         });
 
-        const {password: _, ...userData} = newuser.toObject();
+        const token = jwt.sign({ userID: newuser._id, role: newuser.role }, process.env.JWT_SECRET);
+        const { password: _, ...userData } = newuser.toObject();
 
-        res.status(201).send({ success: true, data: userData });
+        res.status(201).send({ success: true, data: userData, token });
     } catch (error) {
         next(error);
     }
