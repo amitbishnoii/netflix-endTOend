@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Movie from "../models/Movie.js";
 import { AppError } from "../utils/AppError.js";
@@ -30,6 +30,7 @@ export const createProfile = async (req, res, next) => {
             email: email,
             age: age,
             password: hashedPassword,
+            role: req.body.role,
         });
 
         const token = jwt.sign({ userID: newuser._id, role: newuser.role }, process.env.JWT_SECRET);
@@ -89,7 +90,7 @@ export const loginUser = async (req, res, next) => {
 export const addFavourite = async (req, res, next) => {
     try {
         const movie = await Movie.findOne({ name: req.body.movieName });
-        const user = await User.findOne({ username: req.params.username });
+        const user = await User.findOne({ username: req.params.username }).select("username favouriteMovies");
 
         if (!movie) {
             return next(new AppError("movie not found", 404));

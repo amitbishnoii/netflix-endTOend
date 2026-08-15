@@ -6,16 +6,20 @@ import {
     getMovieByName,
     editMovie,
 } from "../controllers/movies.controller.js";
-import { loggerMiddleware } from "../middlewares/loggerMiddleware.js";
-import { roleMiddleware } from "../middlewares/roleMiddleware.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { adminRequire } from "../middlewares/adminRequire.js";
 
 const movieRouter = express.Router();
-movieRouter.use(loggerMiddleware);
 
 movieRouter.get("/", getAllMovies);
 movieRouter.get("/:name", getMovieByName);
-movieRouter.post("/add", roleMiddleware, addMovie);
-movieRouter.put("/update", editMovie)
-movieRouter.delete("/delete/:movieName", roleMiddleware, deleteMovie);
+movieRouter.post("/add", authMiddleware, adminRequire, addMovie);
+movieRouter.put("/update", authMiddleware, adminRequire, editMovie);
+movieRouter.delete(
+    "/delete/:movieName",
+    authMiddleware,
+    adminRequire,
+    deleteMovie,
+);
 
 export default movieRouter;
