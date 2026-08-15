@@ -11,7 +11,7 @@ import { adminRequire } from "../middlewares/adminRequire.js";
 
 const userRouter = express.Router();
 
-userRouter.get("/profile", getProfile);
+userRouter.get("/profile", authMiddleware, getProfile);
 userRouter.get("/:username", authMiddleware, adminRequire, getUser);
 userRouter.post("/:username/add-favourite", authMiddleware, addFavourite);
 userRouter.put("/edit/:username", authMiddleware, updateUser);

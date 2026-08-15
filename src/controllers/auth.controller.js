@@ -29,7 +29,6 @@ export const signupUser = async (req, res, next) => {
             email: email,
             age: age,
             password: hashedPassword,
-            role: req.body.role,
         });
 
         const token = jwt.sign(
