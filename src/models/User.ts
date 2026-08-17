@@ -1,6 +1,15 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
-const userSchema = new mongoose.Schema({
+interface IUser extends mongoose.Document {
+    username: string;
+    password: string;
+    email: string;
+    age: number;
+    role: "admin" | "user";
+    favouriteMovies: { movie: Types.ObjectId }[];
+}
+
+const userSchema = new mongoose.Schema<IUser>({
     username: {
         type: String,
         required: true,
@@ -40,6 +49,7 @@ const userSchema = new mongoose.Schema({
     ],
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model<IUser>("User", userSchema);
 
 export default User;
+export type { IUser };

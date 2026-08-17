@@ -1,11 +1,17 @@
 import Movie from "../models/Movie.js";
+import type { IMovie } from "../models/Movie.js";
 import User from "../models/User.js";
 import { AppError } from "../utils/AppError.js";
+import type { Request, Response, NextFunction } from "express";
 
-export const getAllMovies = async (req, res, next) => {
+export const getAllMovies = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
-        const page = parseInt(req.query.page, 10) || 1;
-        const limit = parseInt(req.query.limit, 10) || 10;
+        const page = parseInt(req.query.page as string, 10) || 1;
+        const limit = parseInt(req.query.limit as string, 10) || 10;
         const skip = (page - 1) * limit;
 
         const [movies, documents] = await Promise.all([
@@ -25,10 +31,15 @@ export const getAllMovies = async (req, res, next) => {
     }
 };
 
-export const getMovieByName = async (req, res, next) => {
+export const getMovieByName = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
-        const name = req.params.name;
-        const movie = await Movie.findOne({ name: name });
+        const name = String(req.params.name);
+        const filter: Partial<IMovie> = { name };
+        const movie = await Movie.findOne(filter);
 
         if (!movie) {
             return next(new AppError("Movie not found", 404));
@@ -40,7 +51,11 @@ export const getMovieByName = async (req, res, next) => {
     }
 };
 
-export const addMovie = async (req, res, next) => {
+export const addMovie = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { movieName, movieYear, genre } = req.body;
 
@@ -60,7 +75,11 @@ export const addMovie = async (req, res, next) => {
     }
 };
 
-export const editMovie = async (req, res, next) => {
+export const editMovie = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { movieName, movieYear } = req.body;
 
@@ -80,13 +99,16 @@ export const editMovie = async (req, res, next) => {
     }
 };
 
-export const deleteMovie = async (req, res, next) => {
+export const deleteMovie = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
-        const { movieName } = req.params;
+        const movieName = String(req.params.movieName);
+        const filter: Partial<IMovie> = { name: movieName };
 
-        const movieDeletion = await Movie.findOneAndDelete({
-            name: movieName,
-        });
+        const movieDeletion = await Movie.findOneAndDelete(filter);
 
         if (!movieDeletion) {
             return next(new AppError("Movie not Found", 404));

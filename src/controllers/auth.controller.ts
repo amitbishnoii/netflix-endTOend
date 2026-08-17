@@ -2,8 +2,14 @@ import jwt from "jsonwebtoken";
 import { AppError } from "../utils/AppError.js";
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
+import type { NextFunction, Response, Request } from "express";
+import config from "../config/config.js";
 
-export const signupUser = async (req, res, next) => {
+export const signupUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { username, email, password, age } = req.body;
 
@@ -33,7 +39,7 @@ export const signupUser = async (req, res, next) => {
 
         const token = jwt.sign(
             { userID: newuser._id, role: newuser.role },
-            process.env.JWT_SECRET,
+            config.jwtAccessSecret,
             { expiresIn: "7d" },
         );
         const { password: _, ...userData } = newuser.toObject();
@@ -44,7 +50,11 @@ export const signupUser = async (req, res, next) => {
     }
 };
 
-export const loginUser = async (req, res, next) => {
+export const loginUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const { username, password } = req.body;
 
@@ -64,13 +74,13 @@ export const loginUser = async (req, res, next) => {
 
         const token = jwt.sign(
             { userID: user._id, role: user.role },
-            process.env.JWT_SECRET,
+            config.jwtAccessSecret,
             { expiresIn: "15m" },
         );
 
         const refreshToken = jwt.sign(
             { userID: user._id },
-            process.env.JWT_SECRET_REFRESH,
+            config.jwtRefreshSecret,
             { expiresIn: "7d" },
         );
         const { password: _, ...userInfo } = user.toObject();
@@ -81,14 +91,21 @@ export const loginUser = async (req, res, next) => {
     }
 };
 
-export const refreshToken = async (req, res, next) => {
+export const refreshToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const refresh = req.body.refresh;
         if (!refresh) {
             return next(new AppError("Refresh token is required", 401));
         }
 
-        const decode = jwt.verify(refresh, process.env.JWT_SECRET_REFRESH);
+        const decode = jwt.verify(refresh, config.jwtRefreshSecret);
+        if (typeof decode === "string") {
+            return next(new AppError("Invalid Token payload!", 401));
+        }
         const userInfo = await User.findById(decode.userID);
 
         if (!userInfo) {
@@ -97,7 +114,7 @@ export const refreshToken = async (req, res, next) => {
 
         const token = jwt.sign(
             { userID: userInfo._id, role: userInfo.role },
-            process.env.JWT_SECRET,
+            config.jwtAccessSecret,
             { expiresIn: "15m" },
         );
         res.status(200).send({ success: true, token });

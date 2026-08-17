@@ -1,15 +1,18 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Movie from "../models/Movie.js";
 import { AppError } from "../utils/AppError.js";
+import type { NextFunction, Request, Response } from "express";
+import type { IUser } from "../models/User.js";
 
-export const getUser = async (req, res, next) => {
+export const getUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
-        const username = req.params.username;
-        const user = await User.findOne({
-            username: username,
-        })
+        const username = String(req.params.username);
+        const filter: Partial<IUser> = { username };
+        const user = await User.findOne(filter)
             .populate("favouriteMovies.movie", "name year")
             .select("-password -email -role");
 
@@ -23,10 +26,16 @@ export const getUser = async (req, res, next) => {
     }
 };
 
-export const updateUser = async (req, res, next) => {
+export const updateUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
+        const username = String(req.params.username);
+        const filter: Partial<IUser> = { username };
         const updatedUser = await User.findOneAndUpdate(
-            { username: req.params.username },
+            filter,
             { age: req.body.age },
             { returnDocument: "after", runValidators: true },
         );
@@ -41,12 +50,16 @@ export const updateUser = async (req, res, next) => {
     }
 };
 
-export const addFavourite = async (req, res, next) => {
+export const addFavourite = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const movie = await Movie.findOne({ name: req.body.movieName });
-        const user = await User.findOne({
-            username: req.params.username,
-        }).select("username favouriteMovies");
+        const username = String(req.params.username);
+        const filter: Partial<IUser> = { username };
+        const user = await User.findOne(filter).select("username favouriteMovies");
 
         if (!movie) {
             return next(new AppError("movie not found", 404));
@@ -75,7 +88,11 @@ export const addFavourite = async (req, res, next) => {
     }
 };
 
-export const getProfile = async (req, res, next) => {
+export const getProfile = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
     try {
         const userInfo = await User.findOne({ _id: req.user.userID }).select(
             "-password",
