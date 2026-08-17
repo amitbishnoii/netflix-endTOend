@@ -1,8 +1,8 @@
-import User from "../models/User.js";
-import Movie from "../models/Movie.js";
-import { AppError } from "../utils/AppError.js";
 import type { NextFunction, Request, Response } from "express";
+import Movie from "../models/Movie.js";
 import type { IUser } from "../models/User.js";
+import User from "../models/User.js";
+import { AppError } from "../utils/AppError.js";
 
 export const getUser = async (
     req: Request,
@@ -59,7 +59,9 @@ export const addFavourite = async (
         const movie = await Movie.findOne({ name: req.body.movieName });
         const username = String(req.params.username);
         const filter: Partial<IUser> = { username };
-        const user = await User.findOne(filter).select("username favouriteMovies");
+        const user = await User.findOne(filter).select(
+            "username favouriteMovies",
+        );
 
         if (!movie) {
             return next(new AppError("movie not found", 404));
@@ -94,6 +96,10 @@ export const getProfile = async (
     next: NextFunction,
 ) => {
     try {
+        if (!req.user) {
+            return next(new AppError("Unauthorized", 401));
+        }
+
         const userInfo = await User.findOne({ _id: req.user.userID }).select(
             "-password",
         );
