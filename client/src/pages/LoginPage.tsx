@@ -46,7 +46,7 @@ const LoginPage = () => {
                     })}
                 />
                 {errors.username && (
-                    <p className="text-red-700 text-[14px]">
+                    <p className="text-red-400 text-xs mt-1 ml-1">
                         {errors.username.message}
                     </p>
                 )}
@@ -60,7 +60,7 @@ const LoginPage = () => {
                     })}
                 />
                 {errors.password && (
-                    <p className="text-red-700 text-[14px]">
+                    <p className="text-red-400 text-xs mt-1 ml-1">
                         {errors.password.message}
                     </p>
                 )}
