@@ -6,12 +6,14 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import connectDB from "./config/db.js";
 import userRouter from "./routes/users.route.js";
 import authRouter from "./routes/auth.route.js";
+import cors from "cors";
 
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(cors());
 app.use(express.json());
 connectDB();
 app.use("/api/movies", movieRouter);

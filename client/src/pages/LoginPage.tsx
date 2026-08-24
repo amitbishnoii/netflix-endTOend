@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useForm } from "react-hook-form";
 
 interface LoginFormData {
@@ -12,8 +13,12 @@ const LoginPage = () => {
         formState: { errors },
     } = useForm<LoginFormData>();
 
-    const formSubmitHandler = (data: LoginFormData) => {
-        console.log(data);
+    const formSubmitHandler = async (data: LoginFormData) => {
+        const response = await axios.post(
+            "http://localhost:3000/api/auth/login",
+            data,
+        );
+        console.log(response);
     };
 
     return (
@@ -34,7 +39,11 @@ const LoginPage = () => {
                         required: "Please provide a Username!",
                     })}
                 />
-                {errors.username && <p className="text-red-700 text-[14px]">{errors.username.message}</p>}
+                {errors.username && (
+                    <p className="text-red-700 text-[14px]">
+                        {errors.username.message}
+                    </p>
+                )}
 
                 <input
                     type="text"
@@ -44,7 +53,11 @@ const LoginPage = () => {
                         required: "Please provide a Password!",
                     })}
                 />
-                {errors.password && <p className="text-red-700 text-[14px]">{errors.password.message}</p>}
+                {errors.password && (
+                    <p className="text-red-700 text-[14px]">
+                        {errors.password.message}
+                    </p>
+                )}
 
                 <button
                     className="w-[70%] h-12 mt-4 rounded-xl bg-white text-black font-semibold text-[15px] hover:bg-zinc-200 active:scale-[0.98] transition-all duration-200 shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
