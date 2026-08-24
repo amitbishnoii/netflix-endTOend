@@ -1,6 +1,8 @@
 import { useForm } from "react-hook-form";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import axios from "axios";
+import { useAuth } from "../hooks/useAuth";
 
 interface SignupPageData {
     username: string;
@@ -11,6 +13,7 @@ interface SignupPageData {
 }
 
 const SignupPage = () => {
+    const { login } = useAuth();
     const [showPassword, setshowPassword] = useState(false);
     const {
         register,
@@ -20,8 +23,20 @@ const SignupPage = () => {
     } = useForm<SignupPageData>();
     const passwordMatch = watch("password");
 
-    const handleSignup = () => {
-        
+    const handleSignup = async (data: SignupPageData) => {
+        const response = await axios.post(
+            "http://localhost:3000/api/auth/signup",
+            {
+                username: data.username,
+                password: data.password,
+                email: data.email,
+                birthday: data.birthday,
+            },
+        );
+        login({
+            username: response.data.username,
+            accessToken: response.data.token,
+        });
     };
 
     return (

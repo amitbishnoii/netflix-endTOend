@@ -11,9 +11,9 @@ export const signupUser = async (
     next: NextFunction,
 ) => {
     try {
-        const { username, email, password, age } = req.body;
+        const { username, email, password, birthday } = req.body;
 
-        if (!username || !email || !password || !age) {
+        if (!username || !email || !password || !birthday) {
             return next(new AppError("Please fill all the fields!", 400));
         }
 
@@ -33,7 +33,7 @@ export const signupUser = async (
         const newuser = await User.create({
             username: username,
             email: email,
-            age: age,
+            birthday: birthday,
             password: hashedPassword,
         });
 

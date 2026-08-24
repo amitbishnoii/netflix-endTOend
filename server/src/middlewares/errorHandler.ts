@@ -5,7 +5,7 @@ export const errorHandler = (
     err: unknown,
     req: Request,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
 ) => {
     if (err instanceof AppError) {
         const statusCode = err.statusCode;
@@ -16,5 +16,7 @@ export const errorHandler = (
         });
     }
 
-    return res.status(500).send({ success: false, message: "something went wrong" });
+    return res
+        .status(500)
+        .send({ success: false, message: "something went wrong" });
 };
