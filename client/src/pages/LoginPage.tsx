@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import { useAuth } from "../hooks/useAuth.ts";
 
 interface LoginFormData {
     username: string;
@@ -12,13 +13,18 @@ const LoginPage = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<LoginFormData>();
+    const { login } = useAuth();
 
     const formSubmitHandler = async (data: LoginFormData) => {
         const response = await axios.post(
             "http://localhost:3000/api/auth/login",
             data,
         );
-        console.log(response);
+        localStorage.setItem("refresh-token", response.data.refreshToken);
+        login({
+            username: response.data.userInfo.username,
+            accessToken: response.data.token,
+        });
     };
 
     return (
