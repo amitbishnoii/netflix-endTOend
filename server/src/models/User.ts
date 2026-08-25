@@ -4,7 +4,7 @@ interface IUser extends mongoose.Document {
     username: string;
     password: string;
     email: string;
-    birthday: Date;
+    birthday: string;
     role: "admin" | "user";
     favouriteMovies: { movie: Types.ObjectId }[];
 }
@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema<IUser>({
     },
 
     birthday: {
-        type: Date,
+        type: String,
         required: true,
         min: [12, "min age is 12 years"],
     },
