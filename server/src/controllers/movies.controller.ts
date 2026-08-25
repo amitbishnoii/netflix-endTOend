@@ -3,6 +3,7 @@ import type { IMovie } from "../models/Movie.js";
 import User from "../models/User.js";
 import { AppError } from "../utils/AppError.js";
 import type { Request, Response, NextFunction } from "express";
+import { getPopularMovies as fetchPopularMovies } from "../services/tmdb.js";
 
 export const getAllMovies = async (
     req: Request,
@@ -122,5 +123,21 @@ export const deleteMovie = async (
         res.status(200).send({ success: true, movieDeletion });
     } catch (error) {
         next(error);
+    }
+};
+
+export const getPopularMovies = async (req: Request, res: Response) => {
+    try {
+        const data = await fetchPopularMovies();
+        if (!data) {
+            res.status(404).send({
+                success: false,
+                message: "Movies not found!",
+            });
+            return;
+        }
+        res.status(200).send({ success: true, data });
+    } catch (error) {
+        res.status(500).send({ success: false, message: "server error" });
     }
 };

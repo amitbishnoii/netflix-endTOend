@@ -5,6 +5,7 @@ import {
     deleteMovie,
     getMovieByName,
     editMovie,
+    getPopularMovies,
 } from "../controllers/movies.controller.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { adminRequire } from "../middlewares/adminRequire.js";
@@ -12,6 +13,7 @@ import { adminRequire } from "../middlewares/adminRequire.js";
 const movieRouter = express.Router();
 
 movieRouter.get("/", getAllMovies);
+movieRouter.get("/popularMovies", getPopularMovies);
 movieRouter.get("/:name", getMovieByName);
 movieRouter.post("/add", authMiddleware, adminRequire, addMovie);
 movieRouter.put("/update", authMiddleware, adminRequire, editMovie);

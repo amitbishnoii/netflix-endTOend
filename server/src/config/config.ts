@@ -6,6 +6,7 @@ interface Config {
     mongodbUri: string;
     jwtAccessSecret: string;
     jwtRefreshSecret: string;
+    VITE_TMDB_API_KEY: string;
 }
 
 const getEnvVar = (key: string): string => {
@@ -21,6 +22,7 @@ const config: Config = {
     mongodbUri: getEnvVar("MONGODB_URI"),
     jwtAccessSecret: getEnvVar("JWT_ACCESS_SECRET"),
     jwtRefreshSecret: getEnvVar("JWT_REFRESH_SECRET"),
+    VITE_TMDB_API_KEY: getEnvVar("VITE_TMDB_API_KEY"),
 };
 
 export default config;
