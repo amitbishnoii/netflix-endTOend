@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../hooks/useAuth.ts";
+import { useNavigate } from "react-router-dom";
 
 interface LoginFormData {
     username: string;
@@ -14,6 +15,7 @@ const LoginPage = () => {
         formState: { errors },
     } = useForm<LoginFormData>();
     const { login } = useAuth();
+    const navigate = useNavigate();
 
     const formSubmitHandler = async (data: LoginFormData) => {
         const response = await axios.post(
@@ -28,13 +30,13 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="bg-[#08090b] text-white w-screen h-screen flex justify-center items-center pt-4">
+        <div className="bg-[#08090b] text-white w-full min-h-screen overflow-hidden flex justify-center items-center pt-4">
             <form
                 onSubmit={handleSubmit(formSubmitHandler)}
                 className="w-98.5 h-125 pt-6 bg-[#111214] border border-white/[0.14] rounded-[20px] flex flex-col items-center gap-5 p-10 shadow-[0_25px_80px_rgba(0,0,0,0.55)]"
             >
                 <h2 className="text-3xl font-semibold mb-6 tracking-[-0.03em] text-white">
-                    Welcome back
+                    Login
                 </h2>
 
                 <input
@@ -66,10 +68,20 @@ const LoginPage = () => {
                 )}
 
                 <button
-                    className="w-[70%] h-12 mt-4 rounded-xl bg-white text-black font-semibold text-[15px] hover:bg-zinc-200 active:scale-[0.98] transition-all duration-200 shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
+                    className="w-[70%] h-12 rounded-xl bg-white text-black font-semibold text-[15px] hover:bg-zinc-200 active:scale-[0.98] transition-all duration-200 shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
                     type="submit"
                 >
                     Login
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => {
+                        navigate("/signup");
+                    }}
+                    className="w-[70%] h-12 rounded-xl bg-transparent border border-white/12 text-zinc-300 font-medium text-[15px] hover:bg-white/5 hover:border-white/22 hover:text-white active:scale-[0.98] transition-all duration-200"
+                >
+                    Create Account
                 </button>
             </form>
         </div>
