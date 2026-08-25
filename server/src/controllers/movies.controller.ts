@@ -138,6 +138,10 @@ export const getPopularMovies = async (req: Request, res: Response) => {
         }
         res.status(200).send({ success: true, data });
     } catch (error) {
-        res.status(500).send({ success: false, message: "server error" });
+        const err = error as Error;
+        res.status(500).send({
+            success: false,
+            message: err.message,
+        });
     }
 };

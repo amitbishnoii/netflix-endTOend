@@ -8,7 +8,6 @@ const tmdbApi = axios.create({
 
 export const getPopularMovies = async () => {
     const response = await tmdbApi.get("/movie/popular");
-    console.log("response of popular movies: ", response);
     return response.data.results;
 };
 
