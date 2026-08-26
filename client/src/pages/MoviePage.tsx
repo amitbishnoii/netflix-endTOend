@@ -60,6 +60,9 @@ const MoviePage = () => {
                         tagline={movieInfo.tagline}
                         genres={movieInfo.genres}
                         homepage={movieInfo.homepage}
+                        origin_country={movieInfo.origin_country}
+                        budget={movieInfo.budget}
+                        production_companies={movieInfo.production_companies}
                     />
                 </>
             ) : (

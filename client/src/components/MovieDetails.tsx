@@ -36,6 +36,21 @@ const MovieDetails = (props: MovieDetailsProps) => {
         }
     }, [currentTab]);
 
+    const formatBudget = (amount: number): string => {
+        if (!amount || amount === 0) return "Not disclosed";
+
+        if (amount >= 1_000_000_000) {
+            return `$${(amount / 1_000_000_000).toFixed(1)}B`;
+        }
+        if (amount >= 1_000_000) {
+            return `$${(amount / 1_000_000).toFixed(1)}M`;
+        }
+        if (amount >= 1_000) {
+            return `$${(amount / 1_000).toFixed(1)}K`;
+        }
+        return `$${amount}`;
+    };
+
     return (
         <div className="main w-full pr-20 flex flex-col">
             <div className="title flex justify-between mb-11">
@@ -80,90 +95,135 @@ const MovieDetails = (props: MovieDetailsProps) => {
             </div>
 
             {currentTab === "Overview" && (
-                <div className="flex flex-col gap-4">
-                    <p className="text-white font-semibold text-xl italic">
-                        {props.tagline}
-                    </p>
+                <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-2">
+                        <p className="text-white font-semibold text-xl italic">
+                            {props.tagline}
+                        </p>
+                        <p className="text-zinc-400 leading-relaxed">
+                            {props.overview}
+                        </p>
+                    </div>
 
-                    <p className="text-zinc-400 leading-relaxed">
-                        {props.overview}
-                    </p>
+                    <div className="flex flex-wrap gap-2">
+                        {props.genres.map((genre) => (
+                            <span
+                                key={genre.name}
+                                className="px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 text-xs font-medium border border-zinc-700"
+                            >
+                                {genre.name}
+                            </span>
+                        ))}
+                    </div>
 
-                    <p className="text-zinc-500 text-sm">
-                        Genre:{" "}
-                        <span className="text-white">
-                            {props.genres
-                                .map((genre) => genre.name)
-                                .join(` | `)}
-                        </span>
-                    </p>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4 border-t border-zinc-800 pt-4">
+                        <div className="flex flex-col gap-1">
+                            <span className="text-zinc-500 text-xs uppercase tracking-wide">
+                                Visit
+                            </span>
+                            <a
+                                className="text-white text-sm underline underline-offset-2 hover:text-zinc-300 transition-colors truncate"
+                                href={props.homepage}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                {props.original_title}
+                            </a>
+                        </div>
 
-                    <p className="text-zinc-500 text-sm">
-                        Visit:{" "}
-                        <a
-                            className="text-white underline underline-offset-2 hover:text-zinc-300 transition-colors"
-                            href={props.homepage}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            {props.original_title}
-                        </a>
-                    </p>
+                        <div className="flex flex-col gap-1">
+                            <span className="text-zinc-500 text-xs uppercase tracking-wide">
+                                Budget
+                            </span>
+                            <span className="text-white text-sm">
+                                {formatBudget(props.budget)}
+                            </span>
+                        </div>
+
+                        <div className="flex flex-col gap-1">
+                            <span className="text-zinc-500 text-xs uppercase tracking-wide">
+                                Country of Origin
+                            </span>
+                            <span className="text-white text-sm">
+                                {props.origin_country.join(", ")}
+                            </span>
+                        </div>
+
+                        <div className="flex flex-col gap-1 col-span-2 sm:col-span-3">
+                            <span className="text-zinc-500 text-xs uppercase tracking-wide">
+                                Production
+                            </span>
+                            <span className="text-white text-sm">
+                                {props.production_companies
+                                    .map(
+                                        (comp) =>
+                                            `${comp.name} (${comp.origin_country})`,
+                                    )
+                                    .join(", ")}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             )}
 
-            {currentTab === "Reviews" &&
-                reviews?.map((review) => {
-                    const rating = review.author_details.rating;
+            <div className="max-h-162.5 overflow-y-auto scrollbar-thin scrollbar-thumb-black/20 pr-1">
+                {currentTab === "Reviews" &&
+                    reviews?.map((review) => {
+                        const rating = review.author_details.rating;
 
-                    return (
-                        <div
-                            key={review.author_details.username}
-                            className="flex gap-4 pb-6 mb-6 border-b border-white/10 last:border-none"
-                        >
-                            <div className="avatar w-11 h-11 rounded-full overflow-hidden bg-zinc-800 flex items-center justify-center shrink-0">
-                                {review.author_details.avatar_path ? (
-                                    <img
-                                        src={`https://image.tmdb.org/t/p/w200${review.author_details.avatar_path}`}
-                                        alt={review.author_details.username}
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <User className="w-5 h-5 text-zinc-400" />
-                                )}
-                            </div>
-
-                            <div className="content flex-1">
-                                <div className="flex items-center justify-between">
-                                    <p className="text-white font-semibold text-sm">
-                                        {review.author_details.username}
-                                    </p>
-
-                                    {rating && (
-                                        <div className="flex items-center gap-1 text-yellow-400 text-sm">
-                                            <Star className="w-4 h-4 fill-yellow-400" />
-                                            {rating}
-                                        </div>
+                        return (
+                            <div
+                                key={review.author_details.username}
+                                className="flex gap-4 pb-6 mb-6 border-b border-white/10 last:border-none"
+                            >
+                                <div className="avatar w-11 h-11 rounded-full overflow-hidden bg-zinc-800 flex items-center justify-center shrink-0">
+                                    {review.author_details.avatar_path ? (
+                                        <img
+                                            src={`https://image.tmdb.org/t/p/w200${review.author_details.avatar_path}`}
+                                            alt={review.author_details.username}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <User className="w-5 h-5 text-zinc-400" />
                                     )}
                                 </div>
 
-                                <p className="text-zinc-500 text-xs mt-0.5">
-                                    {new Date(
-                                        review.created_at,
-                                    ).toLocaleDateString("en-US", {
-                                        year: "numeric",
-                                        month: "short",
-                                        day: "numeric",
-                                    })}
-                                </p>
+                                <div className="content flex-1">
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-white font-semibold text-sm">
+                                            {review.author_details.username}
+                                        </p>
 
-                                <p className="text-zinc-300 text-sm leading-relaxed mt-3 line-clamp-6">
-                                    {review.content}
-                                </p>
+                                        {rating && (
+                                            <div className="flex items-center gap-1 text-yellow-400 text-sm">
+                                                <Star className="w-4 h-4 fill-yellow-400" />
+                                                {rating}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <p className="text-zinc-500 text-xs mt-0.5">
+                                        {new Date(
+                                            review.created_at,
+                                        ).toLocaleDateString("en-US", {
+                                            year: "numeric",
+                                            month: "short",
+                                            day: "numeric",
+                                        })}
+                                    </p>
+
+                                    <p className="text-zinc-300 text-sm leading-relaxed mt-3 line-clamp-6">
+                                        {review.content}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    );
-                })}
+                        );
+                    })}
+            </div>
+
+            <div>{currentTab === "Details" && (<div>
+
+                </div>)}</div>
         </div>
     );
 };
