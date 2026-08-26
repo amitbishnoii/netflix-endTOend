@@ -5,11 +5,16 @@ const movieApi = axios.create({
 });
 
 export const getPopularMovies = async () => {
-    const data = await movieApi.get("/popularMovies");
-    return data;
+    const popularMovies = await movieApi.get("/popularMovies");
+    return popularMovies.data.movies.data;
 };
 
 export const getMovieDetails = async (movieID: number) => {
-    const data = await movieApi.get(`/movieDetails/${movieID}`);
-    return data.data;
+    const movieDetails = await movieApi.get(`/movieDetails/${movieID}`);
+    return movieDetails.data.data.data;
+};
+
+export const getMovieReviews = async (movieID: number) => {
+    const movieReviews = await movieApi.get(`/reviews/${movieID}`);
+    return movieReviews.data.data.results;
 };

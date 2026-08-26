@@ -1,16 +1,40 @@
 import type { MovieDetailsObj } from "@/pages/MoviePage";
-import { Star } from "lucide-react";
-import { useState } from "react";
+import { getMovieReviews } from "@/services/movieApi";
+import { Star, User } from "lucide-react";
+import { useEffect, useState } from "react";
 
 type MovieDetailsProps = Omit<MovieDetailsObj, "poster_path">;
-
 type Tab = "Overview" | "Images" | "Reviews" | "Details";
+
+interface Reviews {
+    author_details: {
+        avatar_path: string;
+        name: string;
+        username: string;
+        rating: string;
+    };
+    content: string;
+    created_at: string;
+    updated_at: string;
+    url: string;
+}
 
 const MovieDetails = (props: MovieDetailsProps) => {
     const [currentTab, setCurrentTab] = useState<Tab>("Overview");
+    const [reviews, setReviews] = useState<Reviews[]>([]);
 
     const hours = Math.floor(props.runtime / 60);
     const minutes = props.runtime % 60;
+
+    useEffect(() => {
+        if (currentTab === "Reviews" && reviews?.length === 0) {
+            const fetchReviews = async () => {
+                const movieReviews = await getMovieReviews(props.id);
+                setReviews(movieReviews);
+            };
+            fetchReviews();
+        }
+    }, [currentTab]);
 
     return (
         <div className="main w-full pr-20 flex flex-col">
@@ -18,8 +42,10 @@ const MovieDetails = (props: MovieDetailsProps) => {
                 <div className="flex flex-col gap-4">
                     <h1 className="text-6xl">{props.original_title}</h1>
                     <span className="text-[14px] text-gray-500 ml-2">
-                        {props.release_date?.slice(0, 4)} | {hours}h {minutes}
-                        min | {props.vote_count} Ratings
+                        {props.release_date?.slice(0, 4)} &nbsp;&nbsp; |
+                        &nbsp;&nbsp; {hours}h {minutes}
+                        min &nbsp;&nbsp; | &nbsp;&nbsp; {props.vote_count}{" "}
+                        Ratings
                     </span>
                 </div>
 
@@ -38,6 +64,7 @@ const MovieDetails = (props: MovieDetailsProps) => {
                     (tab) => {
                         return (
                             <button
+                                key={tab}
                                 onClick={() => setCurrentTab(tab)}
                                 className={`cursor-pointer pb-3 text-sm font-medium transition-colors ${
                                     currentTab === tab
@@ -65,7 +92,9 @@ const MovieDetails = (props: MovieDetailsProps) => {
                     <p className="text-zinc-500 text-sm">
                         Genre:{" "}
                         <span className="text-white">
-                            {props.genres.map((genre) => genre.name).join(", ")}
+                            {props.genres
+                                .map((genre) => genre.name)
+                                .join(` | `)}
                         </span>
                     </p>
 
@@ -83,7 +112,58 @@ const MovieDetails = (props: MovieDetailsProps) => {
                 </div>
             )}
 
-            {currentTab === "Reviews"}
+            {currentTab === "Reviews" &&
+                reviews?.map((review) => {
+                    const rating = review.author_details.rating;
+
+                    return (
+                        <div
+                            key={review.author_details.username}
+                            className="flex gap-4 pb-6 mb-6 border-b border-white/10 last:border-none"
+                        >
+                            <div className="avatar w-11 h-11 rounded-full overflow-hidden bg-zinc-800 flex items-center justify-center shrink-0">
+                                {review.author_details.avatar_path ? (
+                                    <img
+                                        src={`https://image.tmdb.org/t/p/w200${review.author_details.avatar_path}`}
+                                        alt={review.author_details.username}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <User className="w-5 h-5 text-zinc-400" />
+                                )}
+                            </div>
+
+                            <div className="content flex-1">
+                                <div className="flex items-center justify-between">
+                                    <p className="text-white font-semibold text-sm">
+                                        {review.author_details.username}
+                                    </p>
+
+                                    {rating && (
+                                        <div className="flex items-center gap-1 text-yellow-400 text-sm">
+                                            <Star className="w-4 h-4 fill-yellow-400" />
+                                            {rating}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <p className="text-zinc-500 text-xs mt-0.5">
+                                    {new Date(
+                                        review.created_at,
+                                    ).toLocaleDateString("en-US", {
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+                                    })}
+                                </p>
+
+                                <p className="text-zinc-300 text-sm leading-relaxed mt-3 line-clamp-6">
+                                    {review.content}
+                                </p>
+                            </div>
+                        </div>
+                    );
+                })}
         </div>
     );
 };

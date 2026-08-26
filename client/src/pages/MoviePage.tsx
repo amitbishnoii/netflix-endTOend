@@ -38,7 +38,7 @@ const MoviePage = () => {
         }
         const fetchDetails = async () => {
             const movieInfo = await getMovieDetails(Number(params.movieID));
-            setMovieInfo(movieInfo.data);
+            setMovieInfo(movieInfo);
         };
 
         fetchDetails();
@@ -50,6 +50,7 @@ const MoviePage = () => {
                 <>
                     <PosterSection posterUrl={movieInfo.poster_path} />
                     <MovieDetails
+                        id={movieInfo.id}
                         original_title={movieInfo.original_title}
                         release_date={movieInfo.release_date}
                         runtime={movieInfo.runtime}

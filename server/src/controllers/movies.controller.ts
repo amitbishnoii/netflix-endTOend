@@ -4,8 +4,9 @@ import User from "../models/User.js";
 import { AppError } from "../utils/AppError.js";
 import type { Request, Response, NextFunction } from "express";
 import {
-    getPopularMovies as fetchPopularMovies,
-    getDetails as fetchDetails,
+    fetchPopularMovies,
+    fetchDetails,
+    fetchReviews,
 } from "../services/tmdb.js";
 
 export const getAllMovies = async (
@@ -139,7 +140,7 @@ export const getPopularMovies = async (req: Request, res: Response) => {
             });
             return;
         }
-        res.status(200).send({ success: true, data });
+        res.status(200).send({ success: true, movies: data });
     } catch (error) {
         const err = error as Error;
         res.status(500).send({
@@ -168,6 +169,35 @@ export const getDetails = async (req: Request, res: Response) => {
             return;
         }
         res.status(200).send({ success: true, data });
+    } catch (error) {
+        const err = error as Error;
+        res.status(500).send({
+            success: false,
+            message: err.message,
+            cause: err.cause,
+        });
+    }
+};
+
+export const getReviews = async (req: Request, res: Response) => {
+    try {
+        const movieID = req.params.id;
+        if (!movieID) {
+            res.status(401).send({
+                success: false,
+                message: "MovieID is required.",
+            });
+            return;
+        }
+        const data = await fetchReviews(Number(movieID));
+        if (data.success === false) {
+            res.status(500).send({
+                success: false,
+                message: data.message,
+            });
+            return;
+        }
+        res.status(200).send({ success: true, data: data.data });
     } catch (error) {
         const err = error as Error;
         res.status(500).send({
