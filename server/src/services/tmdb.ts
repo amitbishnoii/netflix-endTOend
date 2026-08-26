@@ -74,3 +74,25 @@ export const fetchReviews = async (movieId: number) => {
         }
     }
 };
+
+export const fetchCredits = async (movieId: number) => {
+    try {
+        const response = await tmdbApi.get(`/movie/${movieId}/credits`);
+        return { success: true, data: response.data };
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            return {
+                success: false,
+                message: error.message,
+                code: error.code,
+                url: error.config?.url,
+            };
+        } else {
+            return {
+                success: false,
+                axiosError: false,
+                message: error instanceof Error ? error.message : error,
+            };
+        }
+    }
+};

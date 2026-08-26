@@ -1,12 +1,25 @@
 import type { MovieDetailsObj } from "@/pages/MoviePage";
-import { getMovieReviews } from "@/services/movieApi";
-import { Star, User } from "lucide-react";
+import { getMovieCredits, getMovieReviews } from "@/services/movieApi";
+import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
+import Reviews from "./Reviews";
+import Credits from "./Credits";
 
-type MovieDetailsProps = Omit<MovieDetailsObj, "poster_path">;
 type Tab = "Overview" | "Images" | "Reviews" | "Details";
 
-interface Reviews {
+export interface MovieCast {
+    original_name: string;
+    character: string;
+    profile_path: string;
+}
+
+interface MovieCrew {
+    original_name: string;
+    job: string;
+    profile_path: string;
+}
+
+export interface ReviewsObj {
     author_details: {
         avatar_path: string;
         name: string;
@@ -19,9 +32,11 @@ interface Reviews {
     url: string;
 }
 
-const MovieDetails = (props: MovieDetailsProps) => {
+const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
     const [currentTab, setCurrentTab] = useState<Tab>("Overview");
-    const [reviews, setReviews] = useState<Reviews[]>([]);
+    const [reviews, setReviews] = useState<ReviewsObj[]>([]);
+    const [movieCast, setMovieCast] = useState<MovieCast[]>([]);
+    const [movieCrew, setMovieCrew] = useState<MovieCrew[]>([]);
 
     const hours = Math.floor(props.runtime / 60);
     const minutes = props.runtime % 60;
@@ -33,6 +48,18 @@ const MovieDetails = (props: MovieDetailsProps) => {
                 setReviews(movieReviews);
             };
             fetchReviews();
+        }
+        if (
+            currentTab === "Details" &&
+            movieCast.length === 0 &&
+            movieCrew.length === 0
+        ) {
+            const fetchCredits = async () => {
+                const movieCredits = await getMovieCredits(props.id);
+                setMovieCast(movieCredits.data.cast);
+                setMovieCrew(movieCredits.data.crew);
+            };
+            fetchCredits();
         }
     }, [currentTab]);
 
@@ -166,64 +193,8 @@ const MovieDetails = (props: MovieDetailsProps) => {
                 </div>
             )}
 
-            <div className="max-h-162.5 overflow-y-auto scrollbar-thin scrollbar-thumb-black/20 pr-1">
-                {currentTab === "Reviews" &&
-                    reviews?.map((review) => {
-                        const rating = review.author_details.rating;
-
-                        return (
-                            <div
-                                key={review.author_details.username}
-                                className="flex gap-4 pb-6 mb-6 border-b border-white/10 last:border-none"
-                            >
-                                <div className="avatar w-11 h-11 rounded-full overflow-hidden bg-zinc-800 flex items-center justify-center shrink-0">
-                                    {review.author_details.avatar_path ? (
-                                        <img
-                                            src={`https://image.tmdb.org/t/p/w200${review.author_details.avatar_path}`}
-                                            alt={review.author_details.username}
-                                            className="w-full h-full object-cover"
-                                        />
-                                    ) : (
-                                        <User className="w-5 h-5 text-zinc-400" />
-                                    )}
-                                </div>
-
-                                <div className="content flex-1">
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-white font-semibold text-sm">
-                                            {review.author_details.username}
-                                        </p>
-
-                                        {rating && (
-                                            <div className="flex items-center gap-1 text-yellow-400 text-sm">
-                                                <Star className="w-4 h-4 fill-yellow-400" />
-                                                {rating}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <p className="text-zinc-500 text-xs mt-0.5">
-                                        {new Date(
-                                            review.created_at,
-                                        ).toLocaleDateString("en-US", {
-                                            year: "numeric",
-                                            month: "short",
-                                            day: "numeric",
-                                        })}
-                                    </p>
-
-                                    <p className="text-zinc-300 text-sm leading-relaxed mt-3 line-clamp-6">
-                                        {review.content}
-                                    </p>
-                                </div>
-                            </div>
-                        );
-                    })}
-            </div>
-
-            <div>{currentTab === "Details" && (<div>
-
-                </div>)}</div>
+            {currentTab === "Reviews" && <Reviews movieReviews={reviews} />}
+            {currentTab === "Details" && <Credits movieCast={movieCast} />}
         </div>
     );
 };

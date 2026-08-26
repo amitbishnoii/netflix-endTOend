@@ -18,3 +18,8 @@ export const getMovieReviews = async (movieID: number) => {
     const movieReviews = await movieApi.get(`/reviews/${movieID}`);
     return movieReviews.data.data.results;
 };
+
+export const getMovieCredits = async (movieID:number) => {
+    const movieCredits = await movieApi.get(`/movieCredits/${movieID}`);
+    return movieCredits.data;
+}
