@@ -7,4 +7,9 @@ const movieApi = axios.create({
 export const getPopularMovies = async () => {
     const data = await movieApi.get("/popularMovies");
     return data;
-}
+};
+
+export const getMovieDetails = async (movieID: number) => {
+    const data = await movieApi.get(`/movieDetails/${movieID}`);
+    return data.data;
+};

@@ -5,6 +5,7 @@ import SignupPage from "./pages/SignupPage";
 import Home from "./pages/Home";
 import Favourites from "./pages/Favourites";
 import Navbar from "./components/Navbar";
+import MoviePage from "./pages/MoviePage";
 
 const App = () => {
     return (
@@ -18,6 +19,15 @@ const App = () => {
                         <>
                             <Navbar />
                             <Home />
+                        </>
+                    }
+                />
+                <Route
+                    path="/stream/:movieID"
+                    element={
+                        <>
+                            <Navbar />
+                            <MoviePage />
                         </>
                     }
                 />

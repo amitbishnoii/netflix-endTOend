@@ -9,7 +9,7 @@ export default function Navbar() {
     const { user } = useAuth();
 
     return (
-        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92vw] md:w-[85vw] lg:w-[70vw] max-w-6xl">
+        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92vw] md:w-[85vw] lg:w-[70vw] max-w-7xl">
             <div className="relative rounded-2xl border border-white/10 bg-zinc-950/70 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
                 <div className="absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-violet-400/40 to-transparent" />
                 <div className="px-4 sm:px-6">

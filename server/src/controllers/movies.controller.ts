@@ -3,7 +3,10 @@ import type { IMovie } from "../models/Movie.js";
 import User from "../models/User.js";
 import { AppError } from "../utils/AppError.js";
 import type { Request, Response, NextFunction } from "express";
-import { getPopularMovies as fetchPopularMovies } from "../services/tmdb.js";
+import {
+    getPopularMovies as fetchPopularMovies,
+    getDetails as fetchDetails,
+} from "../services/tmdb.js";
 
 export const getAllMovies = async (
     req: Request,
@@ -129,10 +132,10 @@ export const deleteMovie = async (
 export const getPopularMovies = async (req: Request, res: Response) => {
     try {
         const data = await fetchPopularMovies();
-        if (!data) {
-            res.status(404).send({
+        if (data.success === false) {
+            res.status(500).send({
                 success: false,
-                message: "Movies not found!",
+                message: data.message,
             });
             return;
         }
@@ -142,6 +145,35 @@ export const getPopularMovies = async (req: Request, res: Response) => {
         res.status(500).send({
             success: false,
             message: err.message,
+        });
+    }
+};
+
+export const getDetails = async (req: Request, res: Response) => {
+    try {
+        const movieID = req.params.id;
+        if (!movieID) {
+            res.status(401).send({
+                success: false,
+                message: "MovieID is required.",
+            });
+            return;
+        }
+        const data = await fetchDetails(Number(movieID));
+        if (data.success === false) {
+            res.status(500).send({
+                success: false,
+                message: data.message,
+            });
+            return;
+        }
+        res.status(200).send({ success: true, data });
+    } catch (error) {
+        const err = error as Error;
+        res.status(500).send({
+            success: false,
+            message: err.message,
+            cause: err.cause,
         });
     }
 };

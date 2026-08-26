@@ -1,16 +1,25 @@
+import { useNavigate } from "react-router-dom";
+
 const MovieCard = ({
     movieTitle,
     movieInfo,
     imgUrl,
+    movieID,
 }: {
     movieTitle: string;
     movieInfo: string;
     imgUrl: string;
+    movieID: number;
 }) => {
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate(`/stream/${movieID}`);
+    };
+
     return (
         <div
             className="group relative rounded-xl overflow-hidden bg-zinc-900 border border-white/10 
-                        aspect-2/3 transition-transform duration-300 hover:-translate-y-1 cursor-pointer"
+                        aspect-2/3 transition-transform duration-300 hover:-translate-y-1"
         >
             <img
                 src={imgUrl}
@@ -23,12 +32,16 @@ const MovieCard = ({
             <div
                 className="hidden group-hover:flex absolute inset-0 items-center justify-center text-center
                 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.3)_0%,rgba(0,0,0,0.85)_100%)]
-                backdrop-blur-[1px] transition-opacity duration-300"
+                backdrop-blur-[1px] transition-opacity duration-300 z-20"
             >
                 <button
+                    type="button"
                     className="text-white text-xs sm:text-sm font-medium tracking-wide uppercase
-                     border border-white/20 rounded-full px-4 py-1.5
-                     bg-white/5 backdrop-blur-sm"
+                   border border-white/20 rounded-full px-4 py-1.5
+                   bg-white/5 backdrop-blur-sm cursor-pointer
+                   hover:bg-white/15 hover:border-violet-400/50
+                   active:scale-95 transition-all duration-200"
+                    onClick={handleClick}
                 >
                     Click to watch
                 </button>
