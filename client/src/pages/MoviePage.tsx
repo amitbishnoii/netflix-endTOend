@@ -4,7 +4,7 @@ import { getMovieDetails } from "@/services/movieApi";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-interface MovieDetailsObj {
+export interface MovieDetailsObj {
     budget: number;
     id: number;
     genres: {
@@ -20,10 +20,12 @@ interface MovieDetailsObj {
         logo: string;
         name: string;
         origin_country: string;
-    };
+    }[];
     release_date: string;
     runtime: number;
     tagline: string;
+    vote_average: number;
+    vote_count: number;
 }
 
 const MoviePage = () => {
@@ -44,8 +46,24 @@ const MoviePage = () => {
 
     return (
         <div className="pt-24 pl-24 min-h-screen w-full bg-black text-white flex gap-24">
-            <PosterSection posterUrl={movieInfo?.poster_path} />
-            <MovieDetails />
+            {movieInfo ? (
+                <>
+                    <PosterSection posterUrl={movieInfo.poster_path} />
+                    <MovieDetails
+                        original_title={movieInfo.original_title}
+                        release_date={movieInfo.release_date}
+                        runtime={movieInfo.runtime}
+                        vote_count={movieInfo.vote_count}
+                        vote_average={movieInfo.vote_average}
+                        overview={movieInfo.overview}
+                        tagline={movieInfo.tagline}
+                        genres={movieInfo.genres}
+                        homepage={movieInfo.homepage}
+                    />
+                </>
+            ) : (
+                <p>Loading...</p>
+            )}
         </div>
     );
 };
