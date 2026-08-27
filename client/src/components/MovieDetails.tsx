@@ -3,9 +3,10 @@ import { getMovieCredits, getMovieReviews } from "@/services/movieApi";
 import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import Reviews from "./Reviews";
-import Credits from "./Credits";
+import Cast from "./Cast";
+import Crew from "./Crew";
 
-type Tab = "Overview" | "Images" | "Reviews" | "Details";
+type Tab = "Overview" | "Images" | "Reviews" | "Cast" | "Crew";
 
 export interface MovieCast {
     original_name: string;
@@ -13,7 +14,7 @@ export interface MovieCast {
     profile_path: string;
 }
 
-interface MovieCrew {
+export interface MovieCrew {
     original_name: string;
     job: string;
     profile_path: string;
@@ -49,15 +50,35 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
             };
             fetchReviews();
         }
-        if (
-            currentTab === "Details" &&
-            movieCast.length === 0 &&
-            movieCrew.length === 0
-        ) {
+        if (currentTab === "Cast" && movieCast.length === 0) {
             const fetchCredits = async () => {
                 const movieCredits = await getMovieCredits(props.id);
-                setMovieCast(movieCredits.data.cast);
-                setMovieCrew(movieCredits.data.crew);
+                const trimmedCast: MovieCast[] = movieCredits.data.cast.map(
+                    (person: {
+                        original_name: string;
+                        character: string;
+                        profile_path: string;
+                        [key: string]: unknown;
+                    }) => ({
+                        original_name: person.original_name,
+                        character: person.character,
+                        profile_path: person.profile_path,
+                    }),
+                );
+                const trimmedCrew: MovieCrew[] = movieCredits.data.crew.map(
+                    (person: {
+                        original_name: string;
+                        job: string;
+                        profile_path: string;
+                        [key: string]: unknown;
+                    }) => ({
+                        original_name: person.original_name,
+                        job: person.job,
+                        profile_path: person.profile_path,
+                    }),
+                );
+                setMovieCast(trimmedCast);
+                setMovieCrew(trimmedCrew);
             };
             fetchCredits();
         }
@@ -102,23 +123,23 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
             </div>
 
             <div className="flex gap-8 border-b-2 border-white/20 mb-3">
-                {(["Overview", "Reviews", "Images", "Details"] as Tab[]).map(
-                    (tab) => {
-                        return (
-                            <button
-                                key={tab}
-                                onClick={() => setCurrentTab(tab)}
-                                className={`cursor-pointer pb-3 text-sm font-medium transition-colors ${
-                                    currentTab === tab
-                                        ? "text-white border-b-2 border-white"
-                                        : "text-zinc-500 hover:text-zinc-300"
-                                }`}
-                            >
-                                {tab}
-                            </button>
-                        );
-                    },
-                )}
+                {(
+                    ["Overview", "Reviews", "Images", "Cast", "Crew"] as Tab[]
+                ).map((tab) => {
+                    return (
+                        <button
+                            key={tab}
+                            onClick={() => setCurrentTab(tab)}
+                            className={`cursor-pointer pb-3 text-sm font-medium transition-colors ${
+                                currentTab === tab
+                                    ? "text-white border-b-2 border-white"
+                                    : "text-zinc-500 hover:text-zinc-300"
+                            }`}
+                        >
+                            {tab}
+                        </button>
+                    );
+                })}
             </div>
 
             {currentTab === "Overview" && (
@@ -194,7 +215,8 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
             )}
 
             {currentTab === "Reviews" && <Reviews movieReviews={reviews} />}
-            {currentTab === "Details" && <Credits movieCast={movieCast} />}
+            {currentTab === "Cast" && <Cast movieCast={movieCast} />}
+            {currentTab === "Crew" && <Crew movieCrew={movieCrew} />}
         </div>
     );
 };

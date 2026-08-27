@@ -1,6 +1,6 @@
 const PosterSection = ({ posterUrl }: { posterUrl: string | undefined }) => {
     return (
-        <div className="relative w-125 h-187.5 rounded-2xl overflow-hidden border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
+        <div className="relative w-150 h-187.5 rounded-2xl overflow-hidden border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
             <img
                 src={`https://image.tmdb.org/t/p/original/${posterUrl}`}
                 alt="Movie poster"

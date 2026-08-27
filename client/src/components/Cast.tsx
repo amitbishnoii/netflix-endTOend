@@ -1,10 +1,22 @@
+import { useState } from "react";
 import type { MovieCast } from "./MovieDetails";
+import { ChevronDown } from "lucide-react";
 
-const Credits = ({ movieCast }: { movieCast: MovieCast[] }) => {
+const Cast = ({ movieCast }: { movieCast: MovieCast[] }) => {
+    const [visibleCount, setVisibleCount] = useState(10);
+
+    const handleVisible = () => {
+        if (visibleCount + 5 > movieCast.length) {
+            setVisibleCount((prev) => prev + (movieCast.length - visibleCount));
+        } else {
+            setVisibleCount((prev) => prev + 5);
+        }
+    };
+
     return (
         <div className="max-h-162.5 overflow-y-auto scrollbar-thin scrollbar-thumb-black/20 pr-1">
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {movieCast.map((cast) => {
+                {movieCast.slice(0, visibleCount).map((cast) => {
                     const imageUrl = cast.profile_path
                         ? `https://image.tmdb.org/t/p/w185${cast.profile_path}`
                         : null;
@@ -41,8 +53,20 @@ const Credits = ({ movieCast }: { movieCast: MovieCast[] }) => {
                     );
                 })}
             </div>
+            <button
+                className={`${
+                    movieCast.length === visibleCount ? "hidden" : "flex"
+                } items-center justify-center gap-1.5 mx-auto mt-2 px-5 py-2.5 rounded-full 
+       bg-zinc-800/60 border border-white/10 text-zinc-300 text-sm font-medium
+       hover:bg-zinc-800 hover:border-white/20 hover:text-white
+       active:scale-95 transition-all duration-200 mb-1`}
+                onClick={handleVisible}
+            >
+                Show More
+                <ChevronDown className="w-4 h-4" />
+            </button>
         </div>
     );
 };
 
-export default Credits;
+export default Cast;
