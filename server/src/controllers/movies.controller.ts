@@ -8,6 +8,7 @@ import {
     fetchDetails,
     fetchReviews,
     fetchCredits,
+    fetchImages,
 } from "../services/tmdb.js";
 
 export const getAllMovies = async (
@@ -209,7 +210,7 @@ export const getReviews = async (req: Request, res: Response) => {
     }
 };
 
-export const getCredits = async (req:Request, res: Response) => {
+export const getCredits = async (req: Request, res: Response) => {
     try {
         const movieID = req.params.id;
         if (!movieID) {
@@ -236,4 +237,28 @@ export const getCredits = async (req:Request, res: Response) => {
             cause: err.cause,
         });
     }
-}
+};
+
+export const getImages = async (req: Request, res: Response) => {
+    try {
+        const movieID = req.params.id;
+        if (!movieID) {
+            res.status(401).send({
+                success: false,
+                message: "MovieID is required.",
+            });
+            return;
+        }
+        const data = await fetchImages(Number(movieID));
+        if (data.success === false) {
+            res.status(500).send({ data });
+        }
+        res.status(200).send({ success: true, imageData: data.data });
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: (error as Error).message,
+            cause: (error as Error).cause,
+        });
+    }
+};

@@ -9,90 +9,79 @@ const tmdbApi = axios.create({
     timeout: 10000,
 });
 
-export const fetchPopularMovies = async () => {
+type ServiceResult<T> =
+    | {
+          success: false;
+          message: string;
+      }
+    | {
+          success: true;
+          data: T;
+      };
+
+const errorRes = (error: unknown): ServiceResult<never> => {
+    if (axios.isAxiosError(error)) {
+        return {
+            success: false,
+            message: error.message,
+        };
+    } else {
+        return {
+            success: false,
+            message: (error as Error).message,
+        };
+    }
+};
+
+export const fetchPopularMovies = async (): Promise<ServiceResult<any>> => {
     try {
         const response = await tmdbApi.get("/movie/popular");
         return { success: true, data: response.data.results };
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            return {
-                success: false,
-                message: error.message,
-                code: error.code,
-                url: error.config?.url,
-            };
-        } else {
-            return {
-                success: false,
-                axiosError: false,
-                message: error instanceof Error ? error.message : error,
-            };
-        }
+        return errorRes(error);
     }
 };
 
-export const fetchDetails = async (movieId: number) => {
+export const fetchDetails = async (
+    movieId: number,
+): Promise<ServiceResult<any>> => {
     try {
         const response = await tmdbApi.get(`/movie/${movieId}`);
         return { success: true, data: response.data };
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            return {
-                success: false,
-                message: error.message,
-                code: error.code,
-                url: error.config?.url,
-            };
-        } else {
-            return {
-                success: false,
-                axiosError: false,
-                message: error instanceof Error ? error.message : error,
-            };
-        }
+        return errorRes(error);
     }
 };
 
-export const fetchReviews = async (movieId: number) => {
+export const fetchReviews = async (
+    movieId: number,
+): Promise<ServiceResult<any>> => {
     try {
         const response = await tmdbApi.get(`/movie/${movieId}/reviews`);
         return { success: true, data: response.data };
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            return {
-                success: false,
-                message: error.message,
-                code: error.code,
-                url: error.config?.url,
-            };
-        } else {
-            return {
-                success: false,
-                axiosError: false,
-                message: error instanceof Error ? error.message : error,
-            };
-        }
+        return errorRes(error);
     }
 };
 
-export const fetchCredits = async (movieId: number) => {
+export const fetchCredits = async (
+    movieId: number,
+): Promise<ServiceResult<any>> => {
     try {
         const response = await tmdbApi.get(`/movie/${movieId}/credits`);
         return { success: true, data: response.data };
     } catch (error) {
-        if (axios.isAxiosError(error)) {
-            return {
-                success: false,
-                message: error.message,
-                code: error.code,
-                url: error.config?.url,
-            };
-        } else {
-            return {
-                success: false,
-                axiosError: false,
-                message: error instanceof Error ? error.message : error,
-            };
-        }
+        return errorRes(error);
+    }
+};
+
+export const fetchImages = async (
+    movieId: number,
+): Promise<ServiceResult<any>> => {
+    try {
+        const response = await tmdbApi.get(`/movie/${movieId}/images`);
+        return { success: true, data: response.data.backdrops };
+    } catch (error) {
+        return errorRes(error);
     }
 };
