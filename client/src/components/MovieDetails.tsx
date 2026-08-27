@@ -65,18 +65,35 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
                         profile_path: person.profile_path,
                     }),
                 );
-                const trimmedCrew: MovieCrew[] = movieCredits.data.crew.map(
-                    (person: {
-                        original_name: string;
-                        job: string;
-                        profile_path: string;
-                        [key: string]: unknown;
-                    }) => ({
-                        original_name: person.original_name,
-                        job: person.job,
-                        profile_path: person.profile_path,
-                    }),
-                );
+                const keyRoles = [
+                    "Director",
+                    "Producer",
+                    "Writer",
+                    "Co-Producer",
+                ];
+                const trimmedCrew: MovieCrew[] = movieCredits.data.crew
+                    .map(
+                        (person: {
+                            original_name: string;
+                            job: string;
+                            profile_path: string;
+                            [key: string]: unknown;
+                        }) => ({
+                            original_name: person.original_name,
+                            job: person.job,
+                            profile_path: person.profile_path,
+                        }),
+                    )
+                    .filter(
+                        (crewMember: {
+                            original_name: string;
+                            job: string;
+                            profile_path: string;
+                            [key: string]: unknown;
+                        }) => {
+                            return keyRoles.includes(crewMember.job);
+                        },
+                    );
                 setMovieCast(trimmedCast);
                 setMovieCrew(trimmedCrew);
             };
