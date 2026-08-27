@@ -1,10 +1,15 @@
 import type { MovieDetailsObj } from "@/pages/MoviePage";
-import { getMovieCredits, getMovieReviews } from "@/services/movieApi";
-import { Star } from "lucide-react";
+import {
+    getImages,
+    getMovieCredits,
+    getMovieReviews,
+} from "@/services/movieApi";
+import { Images, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import Reviews from "./Reviews";
 import Cast from "./Cast";
 import Crew from "./Crew";
+import ImageTab from "./ImageTab";
 
 type Tab = "Overview" | "Images" | "Reviews" | "Cast" | "Crew";
 
@@ -33,11 +38,18 @@ export interface ReviewsObj {
     url: string;
 }
 
+export interface imageObj {
+    height: number;
+    width: number;
+    file_path: string;
+}
+
 const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
     const [currentTab, setCurrentTab] = useState<Tab>("Overview");
     const [reviews, setReviews] = useState<ReviewsObj[]>([]);
     const [movieCast, setMovieCast] = useState<MovieCast[]>([]);
     const [movieCrew, setMovieCrew] = useState<MovieCrew[]>([]);
+    const [images, setImages] = useState<imageObj[]>([]);
 
     const hours = Math.floor(props.runtime / 60);
     const minutes = props.runtime % 60;
@@ -98,6 +110,13 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
                 setMovieCrew(trimmedCrew);
             };
             fetchCredits();
+        }
+        if (currentTab === "Images" || images.length === 0) {
+            const fetchImages = async () => {
+                const data = await getImages(props.id);
+                setImages(data);
+            };
+            fetchImages();
         }
     }, [currentTab]);
 
@@ -234,6 +253,17 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
             {currentTab === "Reviews" && <Reviews movieReviews={reviews} />}
             {currentTab === "Cast" && <Cast movieCast={movieCast} />}
             {currentTab === "Crew" && <Crew movieCrew={movieCrew} />}
+            {currentTab === "Images" &&
+                images.map((img) => {
+                    return (
+                        <ImageTab
+                            key={img.file_path}
+                            width={img.width}
+                            height={img.height}
+                            file_path={img.file_path}
+                        />
+                    );
+                })}
         </div>
     );
 };
