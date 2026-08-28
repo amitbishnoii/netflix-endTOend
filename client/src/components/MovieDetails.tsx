@@ -1,17 +1,15 @@
 import type { MovieDetailsObj } from "@/pages/MoviePage";
 import {
-    getImages,
     getMovieCredits,
     getMovieReviews,
 } from "@/services/movieApi";
-import { Images, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import Reviews from "./Reviews";
 import Cast from "./Cast";
 import Crew from "./Crew";
-import ImageTab from "./ImageTab";
 
-type Tab = "Overview" | "Images" | "Reviews" | "Cast" | "Crew";
+type Tab = "Overview" | "Reviews" | "Cast" | "Crew";
 
 export interface MovieCast {
     original_name: string;
@@ -39,8 +37,6 @@ export interface ReviewsObj {
 }
 
 export interface imageObj {
-    height: number;
-    width: number;
     file_path: string;
 }
 
@@ -49,7 +45,6 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
     const [reviews, setReviews] = useState<ReviewsObj[]>([]);
     const [movieCast, setMovieCast] = useState<MovieCast[]>([]);
     const [movieCrew, setMovieCrew] = useState<MovieCrew[]>([]);
-    const [images, setImages] = useState<imageObj[]>([]);
 
     const hours = Math.floor(props.runtime / 60);
     const minutes = props.runtime % 60;
@@ -111,13 +106,6 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
             };
             fetchCredits();
         }
-        if (currentTab === "Images" || images.length === 0) {
-            const fetchImages = async () => {
-                const data = await getImages(props.id);
-                setImages(data);
-            };
-            fetchImages();
-        }
     }, [currentTab]);
 
     const formatBudget = (amount: number): string => {
@@ -160,7 +148,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
 
             <div className="flex gap-8 border-b-2 border-white/20 mb-3">
                 {(
-                    ["Overview", "Reviews", "Images", "Cast", "Crew"] as Tab[]
+                    ["Overview", "Reviews", "Cast", "Crew"] as Tab[]
                 ).map((tab) => {
                     return (
                         <button
@@ -253,17 +241,6 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
             {currentTab === "Reviews" && <Reviews movieReviews={reviews} />}
             {currentTab === "Cast" && <Cast movieCast={movieCast} />}
             {currentTab === "Crew" && <Crew movieCrew={movieCrew} />}
-            {currentTab === "Images" &&
-                images.map((img) => {
-                    return (
-                        <ImageTab
-                            key={img.file_path}
-                            width={img.width}
-                            height={img.height}
-                            file_path={img.file_path}
-                        />
-                    );
-                })}
         </div>
     );
 };

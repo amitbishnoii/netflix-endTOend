@@ -74,14 +74,3 @@ export const fetchCredits = async (
         return errorRes(error);
     }
 };
-
-export const fetchImages = async (
-    movieId: number,
-): Promise<ServiceResult<any>> => {
-    try {
-        const response = await tmdbApi.get(`/movie/${movieId}/images`);
-        return { success: true, data: response.data.backdrops };
-    } catch (error) {
-        return errorRes(error);
-    }
-};

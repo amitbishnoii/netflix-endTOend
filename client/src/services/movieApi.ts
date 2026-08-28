@@ -23,8 +23,3 @@ export const getMovieCredits = async (movieID: number) => {
     const movieCredits = await movieApi.get(`/movieCredits/${movieID}`);
     return movieCredits.data;
 };
-
-export const getImages = async (movieID: number) => {
-    const images = await movieApi.get(`movieImages/${movieID}`);
-    return images.data.imageData;
-};
