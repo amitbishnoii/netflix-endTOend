@@ -13,7 +13,7 @@ const MovieCard = ({
 }) => {
     const navigate = useNavigate();
     const handleClick = () => {
-        navigate(`/stream/${movieID}`);
+        navigate(`/movie/${movieID}`);
     };
 
     return (

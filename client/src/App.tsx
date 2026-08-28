@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Favourites from "./pages/Favourites";
 import Navbar from "./components/Navbar";
 import MoviePage from "./pages/MoviePage";
+import StreamPage from "./pages/StreamPage";
 
 const App = () => {
     return (
@@ -23,7 +24,7 @@ const App = () => {
                     }
                 />
                 <Route
-                    path="/stream/:movieID"
+                    path="/movie/:movieID"
                     element={
                         <>
                             <Navbar />
@@ -31,6 +32,7 @@ const App = () => {
                         </>
                     }
                 />
+                <Route path="/stream/:movieID" element={<StreamPage />} />
                 <Route
                     path="/favourites"
                     element={

@@ -1,13 +1,11 @@
 import type { MovieDetailsObj } from "@/pages/MoviePage";
-import {
-    getMovieCredits,
-    getMovieReviews,
-} from "@/services/movieApi";
-import { Star } from "lucide-react";
+import { getMovieCredits, getMovieReviews } from "@/services/movieApi";
+import { ArrowRight, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import Reviews from "./Reviews";
 import Cast from "./Cast";
 import Crew from "./Crew";
+import { useNavigate } from "react-router-dom";
 
 type Tab = "Overview" | "Reviews" | "Cast" | "Crew";
 
@@ -48,6 +46,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
 
     const hours = Math.floor(props.runtime / 60);
     const minutes = props.runtime % 60;
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (currentTab === "Reviews" && reviews?.length === 0) {
@@ -125,7 +124,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
 
     return (
         <div className="main w-full pr-20 flex flex-col">
-            <div className="title flex justify-between mb-11">
+            <div className="title flex justify-between mb-6">
                 <div className="flex flex-col gap-4">
                     <h1 className="text-6xl">{props.original_title}</h1>
                     <span className="text-[14px] text-gray-500 ml-2">
@@ -146,24 +145,51 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
                 </div>
             </div>
 
+            <div
+                className="
+    mb-5 w-40 h-12 bg-white text-black rounded-xl
+    flex justify-center items-center gap-2
+    font-bold group
+    transition-all duration-300 ease-out
+    hover:w-44 hover:shadow-lg cursor-pointer hover:bg-gray-300
+  "
+            >
+                <button
+                    onClick={() => navigate(`/stream/${props.id}`)}
+                    className="cursor-pointer"
+                >
+                    Watch for Free
+                </button>
+
+                <span
+                    className="
+      opacity-0 -translate-x-2
+      group-hover:opacity-100 group-hover:translate-x-0
+      transition-all duration-300 cursor-pointer
+    "
+                >
+                    <ArrowRight size={20} />
+                </span>
+            </div>
+
             <div className="flex gap-8 border-b-2 border-white/20 mb-3">
-                {(
-                    ["Overview", "Reviews", "Cast", "Crew"] as Tab[]
-                ).map((tab) => {
-                    return (
-                        <button
-                            key={tab}
-                            onClick={() => setCurrentTab(tab)}
-                            className={`cursor-pointer pb-3 text-sm font-medium transition-colors ${
-                                currentTab === tab
-                                    ? "text-white border-b-2 border-white"
-                                    : "text-zinc-500 hover:text-zinc-300"
-                            }`}
-                        >
-                            {tab}
-                        </button>
-                    );
-                })}
+                {(["Overview", "Reviews", "Cast", "Crew"] as Tab[]).map(
+                    (tab) => {
+                        return (
+                            <button
+                                key={tab}
+                                onClick={() => setCurrentTab(tab)}
+                                className={`cursor-pointer pb-3 text-sm font-medium transition-colors ${
+                                    currentTab === tab
+                                        ? "text-white border-b-2 border-white"
+                                        : "text-zinc-500 hover:text-zinc-300"
+                                }`}
+                            >
+                                {tab}
+                            </button>
+                        );
+                    },
+                )}
             </div>
 
             {currentTab === "Overview" && (
