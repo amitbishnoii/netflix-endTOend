@@ -6,7 +6,7 @@ const StreamPage = () => {
     const { movieID } = useParams();
 
     const videoRef = useRef<HTMLVideoElement>(null);
-    const streamURL = "http://localhost:3000/hls-test/720p.m3u8";
+    const streamURL = "http://localhost:3000/hls-test/master.m3u8";
     const navigate = useNavigate();
 
     useEffect(() => {
