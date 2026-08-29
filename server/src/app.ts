@@ -14,6 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(cors());
+app.use("/hls-test", express.static(path.join(__dirname, "../public/hls-test")));
 app.use(express.json());
 connectDB();
 app.use("/api/movies", movieRouter);

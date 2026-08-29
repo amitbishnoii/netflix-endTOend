@@ -18,6 +18,7 @@
         "dotenv": "^17.4.2",
         "express": "^5.2.1",
         "express-rate-limit": "^8.6.2",
+        "hls.js": "^1.7.1",
         "jsonwebtoken": "^9.0.3",
         "mongoose": "^9.9.1"
     },
@@ -28,6 +29,7 @@
         "@types/bcrypt": "^6.0.0",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.6",
+        "@types/hls.js": "^0.13.3",
         "@types/jsonwebtoken": "^9.0.10",
         "@types/node": "^26.2.0",
         "supertest": "^7.2.2",
