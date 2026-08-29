@@ -23,10 +23,12 @@ const StreamPage = () => {
         -1,
     );
     const [showControls, setShowControls] = useState(false);
+    const [buffering, setBuffering] = useState(false);
+    const [errorState, setErrorState] = useState(false);
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const hlsRef = useRef<Hls | null>(null);
-    const streamURL = "http://localhost:3000/hls-test/master.m3u8";
+    const streamURL = "http://localhost:3000/hs-test/master.m3u8";
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -52,6 +54,28 @@ const StreamPage = () => {
             setCurrentQuality(hlsRef.current?.currentLevel);
         });
 
+        hls.on(Hls.Events.ERROR, (_, err) => {
+            if (!err.fatal) {
+                return;
+            }
+
+            switch (err.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                    console.log("Network error, trying to fix....");
+                    hls.startLoad();
+                    break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                    console.log("Media error, trying to recover....");
+                    hls.recoverMediaError();
+                    break;
+                default:
+                    console.log("destroying hls player...");
+                    hls.destroy();
+                    setErrorState(true);
+                    break;
+            }
+        });
+
         return () => {
             hls.destroy();
         };
@@ -61,7 +85,6 @@ const StreamPage = () => {
         if (!hlsRef.current) {
             return;
         }
-        setCurrentQuality(-1);
         hlsRef.current.currentLevel = levelIndex;
     };
 
@@ -90,10 +113,11 @@ const StreamPage = () => {
     return (
         <div
             className="bg-black min-h-screen flex flex-col relative group"
-            onMouseMove={() => setShowControls(true)}
+            onMouseOver={() => setShowControls(true)}
+            onMouseOut={() => setShowControls(false)}
         >
             <button
-                onClick={() => window.history.back()}
+                onClick={() => navigate(-1)}
                 className={`absolute top-0 left-0 z-20 flex items-center gap-2 p-4 text-white/90 hover:text-white transition-opacity duration-300 cursor-pointer ${
                     showControls ? "opacity-100" : "opacity-0"
                 }`}
@@ -101,6 +125,18 @@ const StreamPage = () => {
                 <ArrowLeft size={20} />
                 <span className="text-sm font-medium">Back</span>
             </button>
+
+            {buffering && (
+                <div className="absolute inset-0 z-40 flex items-center justify-center">
+                    <span className="text-white">Loading...</span>
+                </div>
+            )}
+
+            {errorState && (
+                <div className="absolute inset-0 flex items-center justify-center text-white">
+                    Something went wrong. Please try again later.
+                </div>
+            )}
 
             <video
                 onPlay={() => setIsPlaying(true)}
@@ -111,13 +147,15 @@ const StreamPage = () => {
                 onLoadedMetadata={() =>
                     setDuration(videoRef.current?.duration ?? 0)
                 }
+                onWaiting={() => setBuffering(true)}
+                onPlaying={() => setBuffering(false)}
                 onClick={togglePlay}
                 ref={videoRef}
-                className="w-full flex-1 object-contain bg-black cursor-pointer"
+                className="w-full flex-1 min-h-0 max-h-screen object-contain bg-black cursor-pointer"
             />
 
             <div
-                className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent px-4 pt-10 pb-4 transition-opacity duration-300 ${
+                className={`absolute bottom-0 left-0 right-0 bg-linear-to-t from-black via-black/80 to-transparent px-4 pt-10 pb-4 transition-opacity duration-300 ${
                     showControls ? "opacity-100" : "opacity-0"
                 }`}
             >
