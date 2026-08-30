@@ -1,6 +1,7 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import config from "../config/config.js";
 import https from "https";
+import Movie, { type IMovie } from "../models/Movie.js";
 
 const tmdbApi = axios.create({
     baseURL: "https://api.themoviedb.org/3",
@@ -20,7 +21,7 @@ type ServiceResult<T> =
       };
 
 const errorRes = (error: unknown): ServiceResult<never> => {
-    if (axios.isAxiosError(error)) {
+    if (isAxiosError(error)) {
         return {
             success: false,
             message: error.message,
@@ -30,6 +31,24 @@ const errorRes = (error: unknown): ServiceResult<never> => {
             success: false,
             message: (error as Error).message,
         };
+    }
+};
+
+const fetchWithRetires = async (
+    movieId: number,
+    retries: number = 3,
+): Promise<any> => {
+    try {
+        console.log("trying to fetch movie on line 42");
+        return await tmdbApi.get(`/movie/${movieId}`);
+    } catch (error) {
+        if (isAxiosError(error) && !error.request && retries > 0) {
+            console.log("retrying...");
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            return fetchWithRetires(movieId, retries - 1);
+        }
+        console.log("got an error at line 50");
+        throw error;
     }
 };
 
@@ -44,10 +63,45 @@ export const fetchPopularMovies = async (): Promise<ServiceResult<any>> => {
 
 export const fetchDetails = async (
     movieId: number,
-): Promise<ServiceResult<any>> => {
+): Promise<ServiceResult<IMovie>> => {
     try {
-        const response = await tmdbApi.get(`/movie/${movieId}`);
-        return { success: true, data: response.data };
+        const movieExists = await Movie.findOne({ tmdbID: movieId });
+        if (movieExists) {
+            console.log("movie found in database");
+            return { success: true, data: movieExists };
+        } else {
+            console.log("movie didnt found in db so fetching from tmdb");
+            try {
+                const response = await fetchWithRetires(movieId);
+                console.log("fetching from fetchWithRetires: ", response);
+                const movieData: Partial<IMovie> = {
+                    tmdbID: movieId,
+                    title: response.data.original_title,
+                    releaseDate: response.data.release_date,
+                    genre: response.data.genres.map(
+                        (genre: { name: string }) => genre.name,
+                    ),
+                    overview: response.data.overview,
+                    tagLine: response.data.tagline,
+                    posterPath: response.data.backdrop_path,
+                    budget: response.data.budget,
+                    homepage: response.data.homepage,
+                    originCountry: response.data.origin_country,
+                    productionCompanies: response.data.production_companies.map(
+                        (company: { name: string }) => company.name,
+                    ),
+                    runtime: response.data.runtime,
+                    rating: response.data.vote_average,
+                    ratingCount: response.data.vote_count,
+                };
+                const savedMovie = await Movie.create(movieData);
+
+                return { success: true, data: savedMovie };
+            } catch (error) {
+                console.log("error occured at line 95");
+                return errorRes(error);
+            }
+        }
     } catch (error) {
         return errorRes(error);
     }
