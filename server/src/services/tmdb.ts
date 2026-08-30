@@ -67,7 +67,6 @@ export const fetchDetails = async (
     try {
         const movieExists = await Movie.findOne({ tmdbID: movieId });
         if (movieExists) {
-            console.log("movie found in database");
             return { success: true, data: movieExists };
         } else {
             console.log("movie didnt found in db so fetching from tmdb");
@@ -83,7 +82,7 @@ export const fetchDetails = async (
                     ),
                     overview: response.data.overview,
                     tagLine: response.data.tagline,
-                    posterPath: response.data.backdrop_path,
+                    posterPath: response.data.poster_path,
                     budget: response.data.budget,
                     homepage: response.data.homepage,
                     originCountry: response.data.origin_country,
