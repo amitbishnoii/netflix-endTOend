@@ -7,7 +7,7 @@ const tmdbApi = axios.create({
     baseURL: "https://api.themoviedb.org/3",
     headers: { Authorization: `Bearer ${config.VITE_TMDB_API_KEY}` },
     httpsAgent: new https.Agent({ family: 4, keepAlive: true }),
-    timeout: 10000,
+    timeout: 1,
 });
 
 type ServiceResult<T> =
@@ -42,12 +42,15 @@ const fetchWithRetires = async (
         console.log("trying to fetch movie on line 42");
         return await tmdbApi.get(`/movie/${movieId}`);
     } catch (error) {
-        if (isAxiosError(error) && !error.request && retries > 0) {
-            console.log("retrying...");
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+        console.log("TMDB fetch failed. Retries left:", retries);
+
+        if (axios.isAxiosError(error) && !error.response && retries > 0) {
+            console.log("Retrying...");
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             return fetchWithRetires(movieId, retries - 1);
         }
-        console.log("got an error at line 50");
+
+        console.log("Giving up, throwing error");
         throw error;
     }
 };
