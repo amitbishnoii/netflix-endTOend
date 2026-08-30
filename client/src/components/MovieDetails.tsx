@@ -38,7 +38,7 @@ export interface imageObj {
     file_path: string;
 }
 
-const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
+const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
     const [currentTab, setCurrentTab] = useState<Tab>("Overview");
     const [reviews, setReviews] = useState<ReviewsObj[]>([]);
     const [movieCast, setMovieCast] = useState<MovieCast[]>([]);
@@ -51,14 +51,14 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
     useEffect(() => {
         if (currentTab === "Reviews" && reviews?.length === 0) {
             const fetchReviews = async () => {
-                const movieReviews = await getMovieReviews(props.id);
+                const movieReviews = await getMovieReviews(props.tmdbID);
                 setReviews(movieReviews);
             };
             fetchReviews();
         }
         if (currentTab === "Cast" && movieCast.length === 0) {
             const fetchCredits = async () => {
-                const movieCredits = await getMovieCredits(props.id);
+                const movieCredits = await getMovieCredits(props.tmdbID);
                 const trimmedCast: MovieCast[] = movieCredits.data.cast.map(
                     (person: {
                         original_name: string;
@@ -126,11 +126,11 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
         <div className="main w-full pr-20 flex flex-col">
             <div className="title flex justify-between mb-6">
                 <div className="flex flex-col gap-4">
-                    <h1 className="text-6xl">{props.original_title}</h1>
+                    <h1 className="text-6xl">{props.title}</h1>
                     <span className="text-[14px] text-gray-500 ml-2">
-                        {props.release_date?.slice(0, 4)} &nbsp;&nbsp; |
+                        {props.releaseDate?.slice(0, 4)} &nbsp;&nbsp; |
                         &nbsp;&nbsp; {hours}h {minutes}
-                        min &nbsp;&nbsp; | &nbsp;&nbsp; {props.vote_count}{" "}
+                        min &nbsp;&nbsp; | &nbsp;&nbsp; {props.ratingCount}{" "}
                         Ratings
                     </span>
                 </div>
@@ -138,7 +138,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
                 <div className="flex items-center flex-col gap-1 mt-2">
                     <div className="flex items-center gap-1">
                         <span className="text-4xl">
-                            {props.vote_average.toFixed(1)}
+                            {props.rating.toFixed(1)}
                         </span>
                         <Star className="w-7 h-7 fill-yellow-400 text-yellow-400" />
                     </div>
@@ -155,7 +155,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
   "
             >
                 <button
-                    onClick={() => navigate(`/stream/${props.id}`)}
+                    onClick={() => navigate(`/stream/${props.tmdbID}`)}
                     className="cursor-pointer"
                 >
                     Watch for Free
@@ -196,7 +196,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
                 <div className="flex flex-col gap-6">
                     <div className="flex flex-col gap-2">
                         <p className="text-white font-semibold text-xl italic">
-                            {props.tagline}
+                            {props.tagLine}
                         </p>
                         <p className="text-zinc-400 leading-relaxed">
                             {props.overview}
@@ -204,12 +204,12 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
                     </div>
 
                     <div className="flex flex-wrap gap-2">
-                        {props.genres.map((genre) => (
+                        {props.genre.map((genre) => (
                             <span
-                                key={genre.name}
+                                key={genre}
                                 className="px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 text-xs font-medium border border-zinc-700"
                             >
-                                {genre.name}
+                                {genre}
                             </span>
                         ))}
                     </div>
@@ -225,7 +225,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                {props.original_title}
+                                {props.title}
                             </a>
                         </div>
 
@@ -243,7 +243,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
                                 Country of Origin
                             </span>
                             <span className="text-white text-sm">
-                                {props.origin_country.join(", ")}
+                                {props.originCountry.join(", ")}
                             </span>
                         </div>
 
@@ -252,11 +252,8 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "poster_path">) => {
                                 Production
                             </span>
                             <span className="text-white text-sm">
-                                {props.production_companies
-                                    .map(
-                                        (comp) =>
-                                            `${comp.name} (${comp.origin_country})`,
-                                    )
+                                {props.productionCompanies
+                                    .map((comp) => `${comp}`)
                                     .join(", ")}
                             </span>
                         </div>

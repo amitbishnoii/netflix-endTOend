@@ -6,26 +6,19 @@ import { useParams } from "react-router-dom";
 
 export interface MovieDetailsObj {
     budget: number;
-    id: number;
-    genres: {
-        id: string;
-        name: string;
-    }[];
+    tmdbID: number;
+    genre: string[];
     homepage: string;
-    origin_country: string[];
-    original_title: string;
+    originCountry: string[];
+    title: string;
     overview: string;
-    poster_path: string;
-    production_companies: {
-        logo: string;
-        name: string;
-        origin_country: string;
-    }[];
-    release_date: string;
+    posterPath: string;
+    productionCompanies: string[];
+    releaseDate: string;
     runtime: number;
-    tagline: string;
-    vote_average: number;
-    vote_count: number;
+    tagLine: string;
+    rating: number;
+    ratingCount: number;
 }
 
 const MoviePage = () => {
@@ -48,21 +41,21 @@ const MoviePage = () => {
         <div className="pt-24 pl-24 min-h-screen w-full bg-black text-white flex gap-24">
             {movieInfo ? (
                 <>
-                    <PosterSection posterUrl={movieInfo.poster_path} />
+                    <PosterSection posterUrl={movieInfo.posterPath} />
                     <MovieDetails
-                        id={movieInfo.id}
-                        original_title={movieInfo.original_title}
-                        release_date={movieInfo.release_date}
+                        tmdbID={movieInfo.tmdbID}
+                        title={movieInfo.title}
+                        releaseDate={movieInfo.releaseDate}
                         runtime={movieInfo.runtime}
-                        vote_count={movieInfo.vote_count}
-                        vote_average={movieInfo.vote_average}
+                        ratingCount={movieInfo.ratingCount}
+                        rating={movieInfo.rating}
                         overview={movieInfo.overview}
-                        tagline={movieInfo.tagline}
-                        genres={movieInfo.genres}
+                        tagLine={movieInfo.tagLine}
+                        genre={movieInfo.genre}
                         homepage={movieInfo.homepage}
-                        origin_country={movieInfo.origin_country}
+                        originCountry={movieInfo.originCountry}
                         budget={movieInfo.budget}
-                        production_companies={movieInfo.production_companies}
+                        productionCompanies={movieInfo.productionCompanies}
                     />
                 </>
             ) : (
