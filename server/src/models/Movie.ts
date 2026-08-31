@@ -1,4 +1,4 @@
-import mongoose, { Document } from "mongoose";
+import mongoose, { Document, Mongoose, Schema } from "mongoose";
 
 interface IMovie extends Document {
     tmdbID: number;
@@ -15,6 +15,7 @@ interface IMovie extends Document {
     runtime: number;
     rating: number;
     ratingCount: number;
+    reviews: { review: Schema.Types.ObjectId }[];
 }
 
 const movieSchema = new mongoose.Schema<IMovie>({
@@ -32,6 +33,7 @@ const movieSchema = new mongoose.Schema<IMovie>({
     runtime: { type: Number, required: true },
     rating: { type: Number, required: true },
     ratingCount: { type: Number, required: true },
+    reviews: [{ type: Schema.Types.ObjectId, ref: "Reviews" }],
 });
 
 const Movie = mongoose.model<IMovie>("Movie", movieSchema);

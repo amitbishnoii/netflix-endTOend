@@ -7,7 +7,7 @@ const tmdbApi = axios.create({
     baseURL: "https://api.themoviedb.org/3",
     headers: { Authorization: `Bearer ${config.VITE_TMDB_API_KEY}` },
     httpsAgent: new https.Agent({ family: 4, keepAlive: true }),
-    timeout: 1,
+    timeout: 5000,
 });
 
 type ServiceResult<T> =
