@@ -29,86 +29,99 @@ const LoginPage = () => {
         });
     };
 
+    const inputBase =
+        "w-full bg-transparent border-0 border-b-2 border-white/15 rounded-none px-1 pb-3 pt-2 text-[16px] sm:text-[17px] text-white placeholder:text-white/25 outline-none transition-colors duration-200 focus:border-[#ff7a59]";
     return (
-        <div className="relative bg-[#08090a] text-white w-full min-h-screen overflow-hidden flex justify-center items-center px-4">
-            <div className="pointer-events-none absolute w-150 h-150 rounded-full bg-[#e8b34f]/6 blur-[120px]" />
-
-            <form
-                onSubmit={handleSubmit(formSubmitHandler)}
-                className="relative w-full max-w-100 py-12 px-10 bg-[#0f1012]/90 backdrop-blur-xl border border-white/8 rounded-[28px] flex flex-col items-center gap-6 shadow-[0_30px_100px_rgba(0,0,0,0.7)]"
-            >
-                <div className="flex flex-col items-center gap-2 mb-2 text-center">
-                    <h2 className="text-[32px] font-semibold tracking-[-0.03em] text-white leading-tight">
-                        Welcome back
-                    </h2>
-                    <p className="text-[14px] text-white/40">
-                        Sign in to continue to your account
+        <div className="bg-[#050505] text-white w-full min-h-screen flex flex-col lg:flex-row-reverse overflow-hidden">
+            <div className="hidden lg:flex relative w-[44%] min-h-screen items-end p-14 overflow-hidden">
+                <div className="pointer-events-none absolute -top-32 -right-32 w-130 h-130 rounded-full bg-[#ff7a59]/15 blur-[140px]" />
+                <div className="pointer-events-none absolute bottom-0 left-0 w-100 h-100 rounded-full bg-[#2f7cff]/12 blur-[120px]" />
+                <div className="relative z-10 flex flex-col gap-6">
+                    <span className="text-[13px] tracking-tight text-white/40">
+                        Good to see you again
+                    </span>
+                    <h1 className="text-[56px] leading-[1.02] font-semibold tracking-[-0.03em] max-w-105">
+                        Right where
+                        <br />
+                        you left
+                        <br />
+                        things.
+                    </h1>
+                    <p className="text-[15px] text-white/40 max-w-90 leading-relaxed">
+                        Sign in and pick up the thread
                     </p>
                 </div>
+            </div>
 
-                <div className="w-full flex flex-col gap-4">
-                    <div className="w-full flex flex-col gap-1.5">
-                        <label className="text-[13px] font-medium text-white/50 ml-1">
-                            Username
-                        </label>
-                        <input
-                            type="text"
-                            className="w-full h-13 px-4 rounded-2xl bg-[#17181b] border border-white/8 text-[15px] text-white placeholder:text-white/25 outline-none transition-all duration-150 hover:border-white/15 focus:border-[#e8b34f]/60 focus:bg-[#191a1e] focus:ring-[3px] focus:ring-[#e8b34f]/12"
-                            placeholder="Enter your username"
-                            {...register("username", {
-                                required: "Please provide a Username!",
-                            })}
-                        />
-                        {errors.username && (
-                            <p className="text-red-400 text-xs ml-1">
-                                {errors.username.message}
-                            </p>
-                        )}
+            <div className="relative flex-1 flex justify-center items-center px-5 sm:px-8 py-12 sm:py-16">
+                <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-70 h-70 sm:w-85 sm:h-85 rounded-full bg-[#ff7a59]/6 blur-[90px] lg:hidden" />
+                <div className="pointer-events-none absolute bottom-0 left-0 w-55 h-55 rounded-full bg-[#2f7cff]/8 blur-[90px] lg:hidden" />
+
+                <form
+                    onSubmit={handleSubmit(formSubmitHandler)}
+                    className="relative w-full max-w-100 flex flex-col gap-7 sm:gap-8"
+                >
+                    <div className="flex flex-col gap-2">
+                        <span className="lg:hidden text-[12px] tracking-tight text-white/35">
+                            Good to see you again
+                        </span>
+                        <h2 className="text-[26px] sm:text-[30px] font-semibold tracking-[-0.02em] text-white">
+                            Login
+                        </h2>
+                        <p className="text-[13.5px] sm:text-[14px] text-white/40">
+                            New here?{" "}
+                            <button
+                                type="button"
+                                className="text-[#ff7a59] hover:underline underline-offset-4"
+                                onClick={() => navigate("/signup")}
+                            >
+                                Create an account
+                            </button>
+                        </p>
                     </div>
 
-                    <div className="w-full flex flex-col gap-1.5">
-                        <label className="text-[13px] font-medium text-white/50 ml-1">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            className="w-full h-13 px-4 rounded-2xl bg-[#17181b] border border-white/8 text-[15px] text-white placeholder:text-white/25 outline-none transition-all duration-150 hover:border-white/15 focus:border-[#e8b34f]/60 focus:bg-[#191a1e] focus:ring-[3px] focus:ring-[#e8b34f]/12"
-                            placeholder="Enter your password"
-                            {...register("password", {
-                                required: "Please provide a Password!",
-                            })}
-                        />
-                        {errors.password && (
-                            <p className="text-red-400 text-xs ml-1">
-                                {errors.password.message}
-                            </p>
-                        )}
+                    <div className="flex flex-col gap-5 sm:gap-6">
+                        <div className="w-full min-h-14.5 sm:min-h-15.5 flex flex-col gap-1.5">
+                            <input
+                                type="text"
+                                className={inputBase}
+                                placeholder="Username"
+                                {...register("username", {
+                                    required: "Please provide a Username!",
+                                })}
+                            />
+                            {errors.username && (
+                                <p className="text-red-400 text-xs ml-1">
+                                    {errors.username.message}
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="w-full min-h-14.5 sm:min-h-15.5 flex flex-col gap-1.5">
+                            <input
+                                type="password"
+                                className={inputBase}
+                                placeholder="Password"
+                                {...register("password", {
+                                    required: "Please provide a Password!",
+                                })}
+                            />
+                            {errors.password && (
+                                <p className="text-red-400 text-xs ml-1">
+                                    {errors.password.message}
+                                </p>
+                            )}
+                        </div>
                     </div>
-                </div>
 
-                <button
-                    className="w-full h-14 rounded-2xl bg-[#e8b34f] text-black font-semibold text-[16px] hover:bg-[#edbf66] active:scale-[0.98] transition-all duration-150 ease-out shadow-[0_10px_30px_rgba(232,179,79,0.2)] mt-2"
-                    type="submit"
-                >
-                    Sign in
-                </button>
-
-                <div className="w-full flex items-center gap-3 my-1">
-                    <div className="h-px flex-1 bg-white/8" />
-                    <span className="text-[12px] text-white/30">or</span>
-                    <div className="h-px flex-1 bg-white/8" />
-                </div>
-
-                <button
-                    type="button"
-                    onClick={() => {
-                        navigate("/signup");
-                    }}
-                    className="w-full h-14 rounded-2xl bg-white/3 border border-white/8 text-white/70 font-medium text-[15px] hover:bg-white/6 hover:border-white/15 hover:text-white active:scale-[0.98] transition-all duration-150"
-                >
-                    Create an account
-                </button>
-            </form>
+                    <button
+                        className="w-full h-13 sm:h-14 rounded-full bg-[#ff7a59] text-black font-semibold text-[15.5px] sm:text-[16px] hover:bg-[#ff8f73] active:scale-[0.97] transition-all duration-150 ease-out shadow-[0_0_40px_rgba(255,122,89,0.25)]"
+                        type="submit"
+                    >
+                        Login
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

@@ -45,104 +45,142 @@ const SignupPage = () => {
     };
 
     const inputBase =
-        "w-full h-12 pl-4 rounded-xl bg-[#18191c] border border-white/10 text-[15px] text-white placeholder:text-zinc-600 outline-none transition-all duration-200 hover:border-white/18 focus:border-indigo-400/70 focus:bg-[#1b1c20] focus:ring-4 focus:ring-indigo-500/10";
-    const inputWithIcon = inputBase.replace("pl-4", "pl-4 pr-12");
+        "w-full bg-transparent border-0 border-b-2 border-white/15 rounded-none px-1 pb-3 pt-2 text-[16px] sm:text-[17px] text-white placeholder:text-white/25 outline-none transition-colors duration-200 focus:border-[#ccff00]";
+    const inputWithIcon = inputBase + " pr-9";
+    const dateInput =
+        "w-full bg-transparent border-0 border-b-2 border-white/15 rounded-none px-1 pb-3 pt-2 text-[16px] sm:text-[17px] text-white/90 outline-none transition-colors duration-200 focus:border-[#ccff00] scheme-dark [&::-webkit-calendar-picker-indicator]:opacity-40 [&::-webkit-calendar-picker-indicator]:hover:opacity-80 [&::-webkit-calendar-picker-indicator]:cursor-pointer";
 
     return (
-        <div className="bg-[#08090b] text-white w-screen h-screen flex justify-center items-center pt-4">
-            <form
-                onSubmit={handleSubmit(handleSignup)}
-                className="w-110 h-150 pt-6 bg-[#111214] border border-white/[0.14] rounded-[20px] flex flex-col items-center gap-5 p-10 shadow-[0_25px_80px_rgba(0,0,0,0.55)]"
-            >
-                <h2 className="text-3xl font-semibold mb-6 tracking-[-0.03em] text-white">
-                    Create account
-                </h2>
+        <div className="bg-[#050505] text-white w-full min-h-screen flex flex-col lg:flex-row overflow-hidden">
+            <div className="hidden lg:flex relative w-[44%] min-h-screen items-end p-14 overflow-hidden">
+                <div className="pointer-events-none absolute -top-32 -left-32 w-130 h-130 rounded-full bg-[#ccff00]/15 blur-[140px]" />
+                <div className="pointer-events-none absolute bottom-0 right-0 w-100 h-100 rounded-full bg-[#7c5cff]/12 blur-[120px]" />
+                <div className="relative z-10 flex flex-col gap-6">
+                    <span className="text-[13px] tracking-tight text-white/40">
+                        Est. today, by you
+                    </span>
+                    <h1 className="text-[56px] leading-[1.02] font-semibold tracking-[-0.03em] max-w-105">
+                        Your account,
+                        <br />
+                        built in under
+                        <br />a minute.
+                    </h1>
+                    <p className="text-[15px] text-white/40 max-w-90 leading-relaxed">
+                        No fluff, no fifteen-step wizard. Fill it in, hit sign
+                        up, get on with your life.
+                    </p>
+                </div>
+            </div>
 
-                <FormInput
-                    wrapperDivClass="w-[70%]"
-                    type="text"
-                    placeholder="Username"
-                    classname={inputBase}
-                    registration={register("username", {
-                        required: "Username is required!",
-                    })}
-                    error={errors.username}
-                />
+            <div className="relative flex-1 flex justify-center items-center px-5 sm:px-8 py-12 sm:py-16">
+                <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-70 h-70 sm:w-85 sm:h-85 rounded-full bg-[#ccff00]/6 blur-[90px] lg:hidden" />
+                <div className="pointer-events-none absolute bottom-0 right-0 w-55 h-55 rounded-full bg-[#7c5cff]/8 blur-[90px] lg:hidden" />
 
-                <FormInput
-                    wrapperDivClass="w-[70%]"
-                    type="email"
-                    placeholder="Email"
-                    classname={inputBase}
-                    registration={register("email", {
-                        required: "Email is required!",
-                        pattern: {
-                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                            message: "Please provide a valid Email.",
-                        },
-                    })}
-                    error={errors.email}
-                />
-
-                <FormInput
-                    wrapperDivClass="w-[70%]"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    classname={inputWithIcon}
-                    registration={register("password", {
-                        required: "Password is required.",
-                        minLength: {
-                            value: 8,
-                            message: "Password must be at least 8 characters.",
-                        },
-                    })}
-                    error={errors.password}
-                    showPassword={showPassword.show}
-                    togglePassword={showPassword.toggle}
-                />
-
-                <FormInput
-                    wrapperDivClass="w-[70%]"
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm Password"
-                    classname={inputWithIcon}
-                    registration={register("passwordConfirm", {
-                        required: "Confirmation is required.",
-                        validate: (value) =>
-                            value === passwordMatch || "Passwords do not match",
-                    })}
-                    showPassword={showConfirmPassword.show}
-                    error={errors.passwordConfirm}
-                    togglePassword={showConfirmPassword.toggle}
-                />
-
-                <FormInput
-                    wrapperDivClass="w-[70%]"
-                    type="text"
-                    placeholder="Birthday"
-                    classname="w-full h-12 px-4 rounded-xl bg-[#18191c] border border-white/10 text-[15px] text-zinc-300 outline-none transition-all duration-200 hover:border-white/18 focus:border-indigo-400/70 focus:bg-[#1b1c20] focus:ring-4 focus:ring-indigo-500/10 scheme-dark"
-                    registration={register("birthday", {
-                        required: "Birthday is required.",
-                    })}
-                    error={errors.birthday}
-                />
-
-                <button
-                    className="w-[70%] h-12 mt-4 rounded-xl bg-white text-black font-semibold text-[15px] hover:bg-zinc-200 active:scale-[0.98] transition-all duration-200 shadow-[0_8px_30px_rgba(255,255,255,0.08)]"
-                    type="submit"
+                <form
+                    onSubmit={handleSubmit(handleSignup)}
+                    className="relative w-full max-w-100 flex flex-col gap-7 sm:gap-8"
                 >
-                    Sign up
-                </button>
+                    <div className="flex flex-col gap-2">
+                        <span className="lg:hidden text-[12px] tracking-tight text-white/35">
+                            Est. today, by you
+                        </span>
+                        <h2 className="text-[26px] sm:text-[30px] font-semibold tracking-[-0.02em] text-white">
+                            Create account
+                        </h2>
+                        <p className="text-[13.5px] sm:text-[14px] text-white/40">
+                            Already in?{" "}
+                            <button
+                                type="button"
+                                className="text-[#ccff00] hover:underline underline-offset-4"
+                                onClick={() => navigate("/login")}
+                            >
+                                Log in instead
+                            </button>
+                        </p>
+                    </div>
 
-                <button
-                    className="w-[70%] h-12 rounded-xl bg-transparent border border-white/12 text-zinc-300 font-medium text-[15px] hover:bg-white/5 hover:border-white/22 hover:text-white active:scale-[0.98] transition-all duration-200"
-                    onClick={() => {
-                        navigate("/login");
-                    }}
-                >
-                    Login
-                </button>
-            </form>
+                    <div className="flex flex-col gap-5 sm:gap-6">
+                        <FormInput
+                            wrapperDivClass="w-full min-h-[58px] sm:min-h-[62px]"
+                            type="text"
+                            placeholder="Username"
+                            classname={inputBase}
+                            registration={register("username", {
+                                required: "Username is required!",
+                            })}
+                            error={errors.username}
+                        />
+
+                        <FormInput
+                            wrapperDivClass="w-full min-h-[58px] sm:min-h-[62px]"
+                            type="email"
+                            placeholder="Email"
+                            classname={inputBase}
+                            registration={register("email", {
+                                required: "Email is required!",
+                                pattern: {
+                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                    message: "Please provide a valid Email.",
+                                },
+                            })}
+                            error={errors.email}
+                        />
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <FormInput
+                                wrapperDivClass="w-full min-h-[58px] sm:min-h-[62px]"
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                classname={inputWithIcon}
+                                registration={register("password", {
+                                    required: "Password is required.",
+                                    minLength: {
+                                        value: 8,
+                                        message: "Min. 8 characters.",
+                                    },
+                                })}
+                                error={errors.password}
+                                showPassword={showPassword.show}
+                                togglePassword={showPassword.toggle}
+                            />
+
+                            <FormInput
+                                wrapperDivClass="w-full min-h-[58px] sm:min-h-[62px]"
+                                type={showConfirmPassword ? "text" : "password"}
+                                placeholder="Confirm"
+                                classname={inputWithIcon}
+                                registration={register("passwordConfirm", {
+                                    required: "Confirmation is required.",
+                                    validate: (value) =>
+                                        value === passwordMatch ||
+                                        "Doesn't match",
+                                })}
+                                showPassword={showConfirmPassword.show}
+                                error={errors.passwordConfirm}
+                                togglePassword={showConfirmPassword.toggle}
+                            />
+                        </div>
+
+                        <FormInput
+                            wrapperDivClass="w-full min-h-[58px] sm:min-h-[62px]"
+                            type="date"
+                            placeholder="Birthday"
+                            classname={dateInput}
+                            registration={register("birthday", {
+                                required: "Birthday is required.",
+                            })}
+                            error={errors.birthday}
+                        />
+                    </div>
+
+                    <button
+                        className="w-full h-13 sm:h-14 rounded-full bg-[#ccff00] text-black font-semibold text-[15.5px] sm:text-[16px] hover:bg-[#d9ff4d] active:scale-[0.97] transition-all duration-150 ease-out shadow-[0_0_40px_rgba(204,255,0,0.25)]"
+                        type="submit"
+                    >
+                        Sign up
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };
