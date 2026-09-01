@@ -15,7 +15,6 @@ const App = () => {
     return (
         <AuthProvider>
             <Routes>
-                <Route path="/" element={<PageSkeleton />} />
                 <Route
                     path="/signup"
                     element={
