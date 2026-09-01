@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import FormInput from "../components/FormInputField";
 import { usePasswordToggle } from "../hooks/usePasswordToggle";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 interface SignupPageData {
     username: string;
@@ -25,8 +26,10 @@ const SignupPage = () => {
     } = useForm<SignupPageData>();
     const passwordMatch = watch("password");
     const navigate = useNavigate();
+    const [error, setError] = useState<string>();
 
     const handleSignup = async (data: SignupPageData) => {
+    try {
         const response = await axios.post(
             "http://localhost:3000/api/auth/signup",
             {
@@ -36,13 +39,20 @@ const SignupPage = () => {
                 birthday: data.birthday,
             },
         );
-        console.log(response);
 
         login({
             username: response.data.username,
             accessToken: response.data.token,
         });
-    };
+    } catch (err) {
+        if (axios.isAxiosError(err) && err.response) {
+            const message = err.response.data.message;
+            setError(message);
+        } else {
+            setError("Something went wrong. Please try again.");
+        }
+    }
+};
 
     const inputBase =
         "w-full bg-transparent border-0 border-b-2 border-white/15 rounded-none px-1 pb-3 pt-2 text-[16px] sm:text-[17px] text-white placeholder:text-white/25 outline-none transition-colors duration-200 focus:border-[#ccff00]";
@@ -171,6 +181,7 @@ const SignupPage = () => {
                             })}
                             error={errors.birthday}
                         />
+                        {error && <p className="text-red-700">{error}</p>}
                     </div>
 
                     <button

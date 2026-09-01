@@ -2,6 +2,9 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../hooks/useAuth.ts";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import FormInput from "@/components/FormInputField.tsx";
+import { usePasswordToggle } from "@/hooks/usePasswordToggle.ts";
 
 interface LoginFormData {
     username: string;
@@ -16,39 +19,49 @@ const LoginPage = () => {
     } = useForm<LoginFormData>();
     const { login } = useAuth();
     const navigate = useNavigate();
+    const [errorInfo, setErrorInfo] = useState<string>();
+    const showPassword = usePasswordToggle();
 
     const formSubmitHandler = async (data: LoginFormData) => {
-        const response = await axios.post(
-            "http://localhost:3000/api/auth/login",
-            data,
-        );
-        localStorage.setItem("refresh-token", response.data.refreshToken);
-        login({
-            username: response.data.userInfo.username,
-            accessToken: response.data.token,
-        });
+        try {
+            const response = await axios.post(
+                "http://localhost:3000/api/auth/login",
+                data,
+            );
+            localStorage.setItem("refresh-token", response.data.refreshToken);
+            login({
+                username: response.data.userInfo.username,
+                accessToken: response.data.token,
+            });
+            navigate("/home");
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response) {
+                setErrorInfo(error.response.data.error);
+            } else {
+                setErrorInfo("Unknown Error!");
+            }
+        }
     };
 
     const inputBase =
         "w-full bg-transparent border-0 border-b-2 border-white/15 rounded-none px-1 pb-3 pt-2 text-[16px] sm:text-[17px] text-white placeholder:text-white/25 outline-none transition-colors duration-200 focus:border-[#ff7a59]";
+    const inputWithIcon = inputBase + " pr-9";
     return (
         <div className="bg-[#050505] text-white w-full min-h-screen flex flex-col lg:flex-row-reverse overflow-hidden">
             <div className="hidden lg:flex relative w-[44%] min-h-screen items-end p-14 overflow-hidden">
                 <div className="pointer-events-none absolute -top-32 -right-32 w-130 h-130 rounded-full bg-[#ff7a59]/15 blur-[140px]" />
                 <div className="pointer-events-none absolute bottom-0 left-0 w-100 h-100 rounded-full bg-[#2f7cff]/12 blur-[120px]" />
                 <div className="relative z-10 flex flex-col gap-6">
-                    <span className="text-[13px] tracking-tight text-white/40">
-                        Good to see you again
-                    </span>
                     <h1 className="text-[56px] leading-[1.02] font-semibold tracking-[-0.03em] max-w-105">
-                        Right where
+                        Sign in
                         <br />
-                        you left
+                        and keep
                         <br />
-                        things.
+                        <span className="text-[#ff7a59]">watching.</span>
                     </h1>
                     <p className="text-[15px] text-white/40 max-w-90 leading-relaxed">
-                        Sign in and pick up the thread
+                        Every list, every rating, every half-finished series —
+                        saved and waiting on the other side.
                     </p>
                 </div>
             </div>
@@ -81,41 +94,39 @@ const LoginPage = () => {
                     </div>
 
                     <div className="flex flex-col gap-5 sm:gap-6">
-                        <div className="w-full min-h-14.5 sm:min-h-15.5 flex flex-col gap-1.5">
-                            <input
-                                type="text"
-                                className={inputBase}
-                                placeholder="Username"
-                                {...register("username", {
-                                    required: "Please provide a Username!",
-                                })}
-                            />
-                            {errors.username && (
-                                <p className="text-red-400 text-xs ml-1">
-                                    {errors.username.message}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="w-full min-h-14.5 sm:min-h-15.5 flex flex-col gap-1.5">
-                            <input
-                                type="password"
-                                className={inputBase}
-                                placeholder="Password"
-                                {...register("password", {
-                                    required: "Please provide a Password!",
-                                })}
-                            />
-                            {errors.password && (
-                                <p className="text-red-400 text-xs ml-1">
-                                    {errors.password.message}
-                                </p>
-                            )}
-                        </div>
+                        <FormInput
+                            wrapperDivClass="w-full min-h-14.5 sm:min-h-15.5 flex flex-col gap-1.5"
+                            type="text"
+                            placeholder="Username"
+                            classname={inputBase}
+                            registration={register("username", {
+                                required: "Please provide a Username!",
+                            })}
+                            error={errors.username}
+                        />
+                        <FormInput
+                            wrapperDivClass="w-full min-h-14.5 sm:min-h-15.5 flex flex-col gap-1.5"
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            classname={inputWithIcon}
+                            registration={register("password", {
+                                required: "Password is required.",
+                                minLength: {
+                                    value: 8,
+                                    message: "Min. 8 characters.",
+                                },
+                            })}
+                            error={errors.password}
+                            showPassword={showPassword.show}
+                            togglePassword={showPassword.toggle}
+                        />
+                        {errorInfo && (
+                            <p className="text-red-700">{errorInfo}</p>
+                        )}
                     </div>
 
                     <button
-                        className="w-full h-13 sm:h-14 rounded-full bg-[#ff7a59] text-black font-semibold text-[15.5px] sm:text-[16px] hover:bg-[#ff8f73] active:scale-[0.97] transition-all duration-150 ease-out shadow-[0_0_40px_rgba(255,122,89,0.25)]"
+                        className="w-full h-13 sm:h-14 rounded-full bg-[#ff7a59] text-black font-semibold text-[15.5px] sm:text-[16px] hover:bg-[#ff8f73] active:scale-[0.97] transition-all duration-150 ease-out shadow-[0_0_40px_rgba(255,122,89,0.25)] cursor-pointer"
                         type="submit"
                     >
                         Login
