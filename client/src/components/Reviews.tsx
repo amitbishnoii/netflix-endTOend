@@ -3,7 +3,7 @@ import type { ReviewsObj } from "./MovieDetails";
 
 const Reviews = ({ movieReviews }: { movieReviews: ReviewsObj[] }) => {
     return (
-        <div className="max-h-162.5 overflow-y-auto scrollbar-thin scrollbar-thumb-black/20 pr-1">
+        <div className="max-h-150 overflow-y-auto scrollbar-thin scrollbar-thumb-black/20 pr-1">
             {movieReviews?.map((review) => {
                 const rating = review.author.rating;
                 return (

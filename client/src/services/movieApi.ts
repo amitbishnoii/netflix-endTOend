@@ -16,10 +16,8 @@ export const getMovieDetails = async (movieID: number) => {
 
 export const getMovieReviews = async (movieID: number) => {
     const movieReviews = await movieApi.get(`/reviews/${movieID}`);
+    if (movieReviews.data.data.length === 0) {
+        return "No Reviews";
+    }
     return movieReviews.data.data;
-};
-
-export const getMovieCredits = async (movieID: number) => {
-    const movieCredits = await movieApi.get(`/movieCredits/${movieID}`);
-    return movieCredits.data;
 };

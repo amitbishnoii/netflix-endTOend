@@ -1,11 +1,10 @@
 import type { MovieDetailsObj } from "@/pages/MoviePage";
-import { getMovieCredits, getMovieReviews } from "@/services/movieApi";
+import { getMovieReviews } from "@/services/movieApi";
 import { ArrowRight, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import Reviews from "./Reviews";
-import Cast from "./Cast";
-import Crew from "./Crew";
 import { useNavigate } from "react-router-dom";
+import Overview from "./Overview";
 
 type Tab = "Overview" | "Reviews" | "Cast" | "Crew";
 
@@ -33,15 +32,11 @@ export interface ReviewsObj {
     updatedAt: string;
 }
 
-export interface imageObj {
-    file_path: string;
-}
-
 const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
     const [currentTab, setCurrentTab] = useState<Tab>("Overview");
     const [reviews, setReviews] = useState<ReviewsObj[]>([]);
-    const [movieCast, setMovieCast] = useState<MovieCast[]>([]);
-    const [movieCrew, setMovieCrew] = useState<MovieCrew[]>([]);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [reviewsNull, setReviewsNull] = useState(false);
 
     const hours = Math.floor(props.runtime / 60);
     const minutes = props.runtime % 60;
@@ -50,76 +45,19 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
     useEffect(() => {
         if (currentTab === "Reviews" && reviews?.length === 0) {
             const fetchReviews = async () => {
+                setReviewsLoading(true);
                 const movieReviews = await getMovieReviews(props.tmdbID);
-                setReviews(movieReviews);
+                if (movieReviews === "No Reviews") {
+                    setReviewsNull(true);
+                    setReviewsLoading(false);
+                } else {
+                    setReviews(movieReviews);
+                    setReviewsLoading(false);
+                }
             };
             fetchReviews();
         }
-        if (currentTab === "Cast" && movieCast.length === 0) {
-            const fetchCredits = async () => {
-                const movieCredits = await getMovieCredits(props.tmdbID);
-                const trimmedCast: MovieCast[] = movieCredits.data.cast.map(
-                    (person: {
-                        original_name: string;
-                        character: string;
-                        profile_path: string;
-                        [key: string]: unknown;
-                    }) => ({
-                        original_name: person.original_name,
-                        character: person.character,
-                        profile_path: person.profile_path,
-                    }),
-                );
-                const keyRoles = [
-                    "Director",
-                    "Producer",
-                    "Writer",
-                    "Co-Producer",
-                ];
-                const trimmedCrew: MovieCrew[] = movieCredits.data.crew
-                    .map(
-                        (person: {
-                            original_name: string;
-                            job: string;
-                            profile_path: string;
-                            [key: string]: unknown;
-                        }) => ({
-                            original_name: person.original_name,
-                            job: person.job,
-                            profile_path: person.profile_path,
-                        }),
-                    )
-                    .filter(
-                        (crewMember: {
-                            original_name: string;
-                            job: string;
-                            profile_path: string;
-                            [key: string]: unknown;
-                        }) => {
-                            return keyRoles.includes(crewMember.job);
-                        },
-                    );
-                setMovieCast(trimmedCast);
-                setMovieCrew(trimmedCrew);
-            };
-            fetchCredits();
-        }
     }, [currentTab]);
-
-    const formatBudget = (amount: number): string => {
-        if (!amount || amount === 0) return "Not disclosed";
-
-        if (amount >= 1_000_000_000) {
-            return `$${(amount / 1_000_000_000).toFixed(1)}B`;
-        }
-        if (amount >= 1_000_000) {
-            return `$${(amount / 1_000_000).toFixed(1)}M`;
-        }
-        if (amount >= 1_000) {
-            return `$${(amount / 1_000).toFixed(1)}K`;
-        }
-        return `$${amount}`;
-    };
 
     return (
         <div className="main w-full pr-20 flex flex-col">
@@ -172,7 +110,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
             </div>
 
             <div className="flex gap-8 border-b-2 border-white/20 mb-3">
-                {(["Overview", "Reviews", "Cast", "Crew"] as Tab[]).map(
+                {(["Overview", "Reviews"] as Tab[]).map(
                     (tab) => {
                         return (
                             <button
@@ -192,77 +130,43 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
             </div>
 
             {currentTab === "Overview" && (
-                <div className="flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                        <p className="text-white font-semibold text-xl italic">
-                            {props.tagLine}
-                        </p>
-                        <p className="text-zinc-400 leading-relaxed">
-                            {props.overview}
-                        </p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2">
-                        {props.genre.map((genre) => (
-                            <span
-                                key={genre}
-                                className="px-3 py-1 rounded-full bg-zinc-800 text-zinc-300 text-xs font-medium border border-zinc-700"
-                            >
-                                {genre}
-                            </span>
-                        ))}
-                    </div>
-
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4 border-t border-zinc-800 pt-4">
-                        <div className="flex flex-col gap-1">
-                            <span className="text-zinc-500 text-xs uppercase tracking-wide">
-                                Visit
-                            </span>
-                            <a
-                                className="text-white text-sm underline underline-offset-2 hover:text-zinc-300 transition-colors truncate"
-                                href={props.homepage}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                {props.title}
-                            </a>
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <span className="text-zinc-500 text-xs uppercase tracking-wide">
-                                Budget
-                            </span>
-                            <span className="text-white text-sm">
-                                {formatBudget(props.budget)}
-                            </span>
-                        </div>
-
-                        <div className="flex flex-col gap-1">
-                            <span className="text-zinc-500 text-xs uppercase tracking-wide">
-                                Country of Origin
-                            </span>
-                            <span className="text-white text-sm">
-                                {props.originCountry.join(", ")}
-                            </span>
-                        </div>
-
-                        <div className="flex flex-col gap-1 col-span-2 sm:col-span-3">
-                            <span className="text-zinc-500 text-xs uppercase tracking-wide">
-                                Production
-                            </span>
-                            <span className="text-white text-sm">
-                                {props.productionCompanies
-                                    .map((comp) => `${comp}`)
-                                    .join(", ")}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <Overview
+                    title={props.title}
+                    overview={props.overview}
+                    originCountry={props.originCountry}
+                    productionCompanies={props.originCountry}
+                    budget={props.budget}
+                    homepage={props.homepage}
+                    tagLine={props.tagLine}
+                    genre={props.genre}
+                />
             )}
 
-            {currentTab === "Reviews" && <Reviews movieReviews={reviews} />}
-            {currentTab === "Cast" && <Cast movieCast={movieCast} />}
-            {currentTab === "Crew" && <Crew movieCrew={movieCrew} />}
+            {currentTab === "Reviews" &&
+                (reviewsLoading ? (
+                    <div className="space-y-4">
+                        {[1, 2, 3].map((i) => (
+                            <div
+                                key={i}
+                                className="p-4 rounded-xl bg-gray-800/50 border border-gray-700/50 space-y-2.5"
+                            >
+                                <div className="relative h-4 w-1/4 rounded-md bg-gray-700 overflow-hidden">
+                                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-linear-to-r from-transparent via-gray-500/40 to-transparent" />
+                                </div>
+                                <div className="relative h-3 w-full rounded-md bg-gray-700 overflow-hidden">
+                                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-linear-to-r from-transparent via-gray-500/40 to-transparent" />
+                                </div>
+                                <div className="relative h-3 w-3/4 rounded-md bg-gray-700 overflow-hidden">
+                                    <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-linear-to-r from-transparent via-gray-500/40 to-transparent" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : reviewsNull ? (
+                    <div>No Reviews!</div>
+                ) : (
+                    <Reviews movieReviews={reviews} />
+                ))}
         </div>
     );
 };
