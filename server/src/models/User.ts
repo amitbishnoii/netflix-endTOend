@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema<IUser>({
     username: {
         type: String,
         required: true,
+        unique: true,
         trim: true,
     },
 
@@ -41,11 +42,7 @@ const userSchema = new mongoose.Schema<IUser>({
         default: "user",
     },
 
-    favouriteMovies: [
-        {
-            movie: { type: mongoose.Schema.Types.ObjectId, ref: "Movie" },
-        },
-    ],
+    favouriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Movie" }],
 });
 
 const User = mongoose.model<IUser>("User", userSchema);

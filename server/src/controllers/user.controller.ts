@@ -56,7 +56,7 @@ export const addFavourite = async (
     next: NextFunction,
 ) => {
     try {
-        const movie = await Movie.findOne({ name: req.body.movieName });
+        const movie = await Movie.findOne({ tmdbID: Number(req.body.tmdbID) });
         const username = String(req.params.username);
         const filter: Partial<IUser> = { username };
         const user = await User.findOne(filter).select(
@@ -64,11 +64,11 @@ export const addFavourite = async (
         );
 
         if (!movie) {
-            return next(new AppError("movie not found", 404));
+            return next(new AppError("Movie not Found", 404));
         }
 
         if (!user) {
-            return next(new AppError("user not found", 404));
+            return next(new AppError("User not Found", 404));
         }
 
         const alreadyFavourite = user.favouriteMovies.some((obj) => {
@@ -77,7 +77,7 @@ export const addFavourite = async (
 
         if (alreadyFavourite) {
             return next(
-                new AppError("movie already exists in favourites", 400),
+                new AppError("Movie already exists in favourites.", 400),
             );
         }
 
@@ -85,6 +85,31 @@ export const addFavourite = async (
         await user.save();
 
         res.status(200).send({ success: true, user });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getFavourites = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const movies = await User.findOne({
+            username: req.body.username,
+        })
+            .select("favouriteMovies")
+            .populate("favouriteMovies.movie");
+        if (!movies) {
+            res.status(404).send({
+                success: false,
+                message: "No favourite Movies!",
+            });
+            return;
+        }
+
+        res.status(200).send({ success: true, favourites: movies.favouriteMovies });
     } catch (error) {
         next(error);
     }
