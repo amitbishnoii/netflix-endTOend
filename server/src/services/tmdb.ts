@@ -2,12 +2,13 @@ import axios, { isAxiosError } from "axios";
 import config from "../config/config.js";
 import https from "https";
 import Movie, { type IMovie } from "../models/Movie.js";
+import Review, { type MovieReview } from "../models/Reviews.js";
 
 const tmdbApi = axios.create({
     baseURL: "https://api.themoviedb.org/3",
     headers: { Authorization: `Bearer ${config.VITE_TMDB_API_KEY}` },
     httpsAgent: new https.Agent({ family: 4, keepAlive: true }),
-    timeout: 5000,
+    timeout: 10000,
 });
 
 type ServiceResult<T> =
@@ -111,10 +112,33 @@ export const fetchDetails = async (
 
 export const fetchReviews = async (
     movieId: number,
-): Promise<ServiceResult<any>> => {
+): Promise<ServiceResult<MovieReview[]>> => {
     try {
-        const response = await tmdbApi.get(`/movie/${movieId}/reviews`);
-        return { success: true, data: response.data };
+        const reviewsExists = await Review.find({ movieID: movieId });
+        if (reviewsExists.length > 0) {
+            return { success: true, data: reviewsExists };
+        } else {
+            const response = await tmdbApi.get(`/movie/${movieId}/reviews`);
+            const reviewsToSave: MovieReview[] = response.data.results.map(
+                (review) => ({
+                    reviewID: review.id,
+                    movieID: movieId,
+                    author: {
+                        name: review.author_details.name || "_null",
+                        username: review.author_details.username,
+                        avatarPath:
+                            review.author_details.avatar_path ?? "_null",
+                        rating: review.author_details.rating ?? 0,
+                    },
+                    content: review.content,
+                    createdAt: review.created_at,
+                    updatedAt: review.updated_at,
+                }),
+            );
+
+            const savedReviews = await Review.insertMany(reviewsToSave);
+            return { success: true, data: savedReviews };
+        }
     } catch (error) {
         return errorRes(error);
     }

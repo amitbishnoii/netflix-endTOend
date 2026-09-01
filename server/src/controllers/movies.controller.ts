@@ -70,7 +70,11 @@ export const getReviews = async (req: Request, res: Response) => {
             return;
         }
         const data = await fetchReviews(Number(movieID));
+        console.log("controller ran at line 73");
         if (data.success === false) {
+            console.log(
+                "error found in data reteurned from service function at line 75 in controller",
+            );
             res.status(500).send({
                 success: false,
                 message: data.message,

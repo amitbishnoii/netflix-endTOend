@@ -1,6 +1,8 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 interface MovieReview extends Document {
+    reviewID: string;
+    movieID: number;
     author: {
         name: string;
         username: string;
@@ -13,6 +15,8 @@ interface MovieReview extends Document {
 }
 
 const reviewSchema = new Schema<MovieReview>({
+    reviewID: { type: String, unique: true, required: true, trim: true },
+    movieID: { type: Number, required: true },
     author: {
         name: { type: String, required: true, trim: true },
         username: { type: String, required: true, trim: true },
@@ -26,3 +30,4 @@ const reviewSchema = new Schema<MovieReview>({
 
 const Review = mongoose.model<MovieReview>("Review", reviewSchema);
 export default Review;
+export type { MovieReview };
