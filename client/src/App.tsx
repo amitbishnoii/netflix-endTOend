@@ -3,6 +3,7 @@ import { AuthProvider } from "./contexts/AuthContextProvider";
 import Navbar from "./components/Navbar";
 import { lazy, Suspense } from "react";
 import PageSkeleton from "./components/PageSkeleton";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
@@ -45,31 +46,33 @@ const App = () => {
                 <Route
                     path="/movie/:movieID"
                     element={
-                        <>
+                        <ProtectedRoute>
                             <Navbar />
                             <Suspense fallback={<PageSkeleton />}>
                                 <MoviePage />
                             </Suspense>
-                        </>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/stream/:movieID"
                     element={
-                        <Suspense fallback={<PageSkeleton />}>
-                            <StreamPage />
-                        </Suspense>
+                        <ProtectedRoute>
+                            <Suspense fallback={<PageSkeleton />}>
+                                <StreamPage />
+                            </Suspense>
+                        </ProtectedRoute>
                     }
                 />
                 <Route
                     path="/favourites"
                     element={
-                        <>
+                        <ProtectedRoute>
                             <Navbar />
                             <Suspense fallback={<PageSkeleton />}>
                                 <Favourites />
                             </Suspense>
-                        </>
+                        </ProtectedRoute>
                     }
                 />
             </Routes>

@@ -143,14 +143,3 @@ export const fetchReviews = async (
         return errorRes(error);
     }
 };
-
-export const fetchCredits = async (
-    movieId: number,
-): Promise<ServiceResult<any>> => {
-    try {
-        const response = await tmdbApi.get(`/movie/${movieId}/credits`);
-        return { success: true, data: response.data };
-    } catch (error) {
-        return errorRes(error);
-    }
-};
