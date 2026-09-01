@@ -22,16 +22,15 @@ export interface MovieCrew {
 }
 
 export interface ReviewsObj {
-    author_details: {
-        avatar_path: string;
+    author: {
+        avatarPath: string;
         name: string;
         username: string;
-        rating: string;
+        rating: number;
     };
     content: string;
-    created_at: string;
-    updated_at: string;
-    url: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface imageObj {
