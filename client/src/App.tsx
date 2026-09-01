@@ -1,25 +1,45 @@
 import { Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContextProvider";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import Home from "./pages/Home";
-import Favourites from "./pages/Favourites";
 import Navbar from "./components/Navbar";
-import MoviePage from "./pages/MoviePage";
-import StreamPage from "./pages/StreamPage";
+import { lazy, Suspense } from "react";
+import PageSkeleton from "./components/PageSkeleton";
+
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const SignupPage = lazy(() => import("./pages/SignupPage"));
+const Home = lazy(() => import("./pages/Home"));
+const Favourites = lazy(() => import("./pages/Favourites"));
+const MoviePage = lazy(() => import("./pages/MoviePage"));
+const StreamPage = lazy(() => import("./pages/StreamPage"));
 
 const App = () => {
     return (
         <AuthProvider>
             <Routes>
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/login" element={<LoginPage />} />
+                <Route path="/" element={<PageSkeleton />} />
+                <Route
+                    path="/signup"
+                    element={
+                        <Suspense fallback={<PageSkeleton />}>
+                            <SignupPage />
+                        </Suspense>
+                    }
+                />
+                <Route
+                    path="/login"
+                    element={
+                        <Suspense fallback={<PageSkeleton />}>
+                            <LoginPage />
+                        </Suspense>
+                    }
+                />
                 <Route
                     path="/home"
                     element={
                         <>
                             <Navbar />
-                            <Home />
+                            <Suspense fallback={<PageSkeleton />}>
+                                <Home />
+                            </Suspense>
                         </>
                     }
                 />
@@ -28,17 +48,28 @@ const App = () => {
                     element={
                         <>
                             <Navbar />
-                            <MoviePage />
+                            <Suspense fallback={<PageSkeleton />}>
+                                <MoviePage />
+                            </Suspense>
                         </>
                     }
                 />
-                <Route path="/stream/:movieID" element={<StreamPage />} />
+                <Route
+                    path="/stream/:movieID"
+                    element={
+                        <Suspense fallback={<PageSkeleton />}>
+                            <StreamPage />
+                        </Suspense>
+                    }
+                />
                 <Route
                     path="/favourites"
                     element={
                         <>
                             <Navbar />
-                            <Favourites />
+                            <Suspense fallback={<PageSkeleton />}>
+                                <Favourites />
+                            </Suspense>
                         </>
                     }
                 />

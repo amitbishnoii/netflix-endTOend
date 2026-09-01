@@ -6,7 +6,7 @@ import Reviews from "./Reviews";
 import { useNavigate } from "react-router-dom";
 import Overview from "./Overview";
 
-type Tab = "Overview" | "Reviews" | "Cast" | "Crew";
+type Tab = "Overview" | "Reviews";
 
 export interface MovieCast {
     original_name: string;
