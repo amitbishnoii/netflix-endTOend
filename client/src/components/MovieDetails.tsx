@@ -1,10 +1,11 @@
 import type { MovieDetailsObj } from "@/pages/MoviePage";
-import { getMovieReviews } from "@/services/movieApi";
+import { addFavourite, getMovieReviews } from "@/services/movieApi";
 import { ArrowRight, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import Reviews from "./Reviews";
 import { useNavigate } from "react-router-dom";
 import Overview from "./Overview";
+import { useAuth } from "@/hooks/useAuth";
 
 type Tab = "Overview" | "Reviews";
 
@@ -37,10 +38,12 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
     const [reviews, setReviews] = useState<ReviewsObj[]>([]);
     const [reviewsLoading, setReviewsLoading] = useState(false);
     const [reviewsNull, setReviewsNull] = useState(false);
+    const [favouriteOrNot, setFavouriteOrNot] = useState(false);
 
     const hours = Math.floor(props.runtime / 60);
     const minutes = props.runtime % 60;
     const navigate = useNavigate();
+    const { user } = useAuth();
 
     useEffect(() => {
         if (currentTab === "Reviews" && reviews?.length === 0) {
@@ -58,6 +61,24 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
             fetchReviews();
         }
     }, [currentTab]);
+
+    const handleFavourites = async () => {
+        console.log(user);
+
+        try {
+            if (!user) {
+                return;
+            }
+            const favourite = await addFavourite(
+                props.tmdbID,
+                user?.username,
+                user?.accessToken,
+            );
+            setFavouriteOrNot(favourite);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className="main w-full pr-20 flex flex-col">
@@ -97,7 +118,6 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
                 >
                     Watch for Free
                 </button>
-
                 <span
                     className="
       opacity-0 -translate-x-2
@@ -108,25 +128,24 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
                     <ArrowRight size={20} />
                 </span>
             </div>
+            <button onClick={handleFavourites}>Add to Favourites</button>
 
             <div className="flex gap-8 border-b-2 border-white/20 mb-3">
-                {(["Overview", "Reviews"] as Tab[]).map(
-                    (tab) => {
-                        return (
-                            <button
-                                key={tab}
-                                onClick={() => setCurrentTab(tab)}
-                                className={`cursor-pointer pb-3 text-sm font-medium transition-colors ${
-                                    currentTab === tab
-                                        ? "text-white border-b-2 border-white"
-                                        : "text-zinc-500 hover:text-zinc-300"
-                                }`}
-                            >
-                                {tab}
-                            </button>
-                        );
-                    },
-                )}
+                {(["Overview", "Reviews"] as Tab[]).map((tab) => {
+                    return (
+                        <button
+                            key={tab}
+                            onClick={() => setCurrentTab(tab)}
+                            className={`cursor-pointer pb-3 text-sm font-medium transition-colors ${
+                                currentTab === tab
+                                    ? "text-white border-b-2 border-white"
+                                    : "text-zinc-500 hover:text-zinc-300"
+                            }`}
+                        >
+                            {tab}
+                        </button>
+                    );
+                })}
             </div>
 
             {currentTab === "Overview" && (

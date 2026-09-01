@@ -81,7 +81,7 @@ export const addFavourite = async (
             );
         }
 
-        user.favouriteMovies.push({ movie: movie._id });
+        user.favouriteMovies.push(movie._id);
         await user.save();
 
         res.status(200).send({ success: true, user });
@@ -109,7 +109,10 @@ export const getFavourites = async (
             return;
         }
 
-        res.status(200).send({ success: true, favourites: movies.favouriteMovies });
+        res.status(200).send({
+            success: true,
+            favourites: movies.favouriteMovies,
+        });
     } catch (error) {
         next(error);
     }

@@ -4,6 +4,10 @@ const movieApi = axios.create({
     baseURL: "http://localhost:3000/api/movies",
 });
 
+const userApi = axios.create({
+    baseURL: "http://localhost:3000/api/users",
+});
+
 export const getPopularMovies = async () => {
     const popularMovies = await movieApi.get("/popularMovies");
     return popularMovies.data.movies.data;
@@ -20,4 +24,24 @@ export const getMovieReviews = async (movieID: number) => {
         return "No Reviews";
     }
     return movieReviews.data.data;
+};
+
+export const addFavourite = async (
+    movieID: number,
+    username: string,
+    accessToken: string,
+) => {
+    const favourite = await userApi.post(
+        `/${username}/add-favourite`,
+        {
+            tmdbID: movieID,
+        },
+        { headers: { Authorization: `Bearer ${accessToken}` } },
+    );
+
+    if (favourite.data.success) {
+        return true;
+    } else {
+        return false;
+    }
 };

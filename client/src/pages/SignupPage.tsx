@@ -29,30 +29,30 @@ const SignupPage = () => {
     const [error, setError] = useState<string>();
 
     const handleSignup = async (data: SignupPageData) => {
-    try {
-        const response = await axios.post(
-            "http://localhost:3000/api/auth/signup",
-            {
-                username: data.username,
-                password: data.password,
-                email: data.email,
-                birthday: data.birthday,
-            },
-        );
-
-        login({
-            username: response.data.username,
-            accessToken: response.data.token,
-        });
-    } catch (err) {
-        if (axios.isAxiosError(err) && err.response) {
-            const message = err.response.data.message;
-            setError(message);
-        } else {
-            setError("Something went wrong. Please try again.");
+        try {
+            const response = await axios.post(
+                "http://localhost:3000/api/auth/signup",
+                {
+                    username: data.username,
+                    password: data.password,
+                    email: data.email,
+                    birthday: data.birthday,
+                },
+            );            
+            login({
+                username: response.data.data.username,
+                accessToken: response.data.token,
+            });
+            navigate("/home");
+        } catch (err) {
+            if (axios.isAxiosError(err) && err.response) {
+                const message = err.response.data.message;
+                setError(message);
+            } else {
+                setError("Something went wrong. Please try again.");
+            }
         }
-    }
-};
+    };
 
     const inputBase =
         "w-full bg-transparent border-0 border-b-2 border-white/15 rounded-none px-1 pb-3 pt-2 text-[16px] sm:text-[17px] text-white placeholder:text-white/25 outline-none transition-colors duration-200 focus:border-[#ccff00]";
@@ -181,11 +181,11 @@ const SignupPage = () => {
                             })}
                             error={errors.birthday}
                         />
-                        {error && <p className="text-red-700">{error}</p>}
                     </div>
+                    {error && <p className="text-red-700">{error}</p>}
 
                     <button
-                        className="w-full h-13 sm:h-14 rounded-full bg-[#ccff00] text-black font-semibold text-[15.5px] sm:text-[16px] hover:bg-[#d9ff4d] active:scale-[0.97] transition-all duration-150 ease-out shadow-[0_0_40px_rgba(204,255,0,0.25)]"
+                        className="w-full h-13 sm:h-14 rounded-full bg-[#ccff00] text-black font-semibold text-[15.5px] sm:text-[16px] hover:bg-[#d9ff4d] active:scale-[0.97] transition-all duration-150 ease-out shadow-[0_0_40px_rgba(204,255,0,0.25)] cursor-pointer"
                         type="submit"
                     >
                         Sign up
