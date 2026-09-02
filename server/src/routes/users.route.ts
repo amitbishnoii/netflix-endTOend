@@ -5,6 +5,7 @@ import {
     addFavourite,
     getProfile,
     getFavourites,
+    removeFavourite,
 } from "../controllers/user.controller.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 import { adminRequire } from "../middlewares/adminRequire.js";
@@ -16,5 +17,10 @@ userRouter.get("/favourites/:username", authMiddleware, getFavourites);
 userRouter.get("/profile/:username", authMiddleware, adminRequire, getUser);
 userRouter.post("/:username/add-favourite", authMiddleware, addFavourite);
 userRouter.put("/edit/:username", authMiddleware, updateUser);
+userRouter.delete(
+    "/:username/remove-favourite",
+    authMiddleware,
+    removeFavourite,
+);
 
 export default userRouter;

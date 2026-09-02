@@ -10,7 +10,7 @@ const PosterSection = ({ posterUrl }: { posterUrl: string | undefined }) => {
             )}
 
             <img
-                src={`https://image.tmdb.org/t/p/original/${posterUrl}`}
+                src={`https://image.tmdb.org/t/p/w780/${posterUrl}`}
                 alt="Movie poster"
                 onLoad={() => setLoaded(true)}
                 fetchPriority="high"

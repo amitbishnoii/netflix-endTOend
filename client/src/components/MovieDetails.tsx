@@ -6,7 +6,11 @@ import Reviews from "./Reviews";
 import { useNavigate } from "react-router-dom";
 import Overview from "./Overview";
 import { useAuth } from "@/hooks/useAuth";
-import { addFavourite } from "@/services/userApi";
+import {
+    addFavourite,
+    getFavourites,
+    removeFavourite,
+} from "@/services/userApi";
 
 type Tab = "Overview" | "Reviews";
 
@@ -63,17 +67,48 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
         }
     }, [currentTab]);
 
+    useEffect(() => {
+        const checkFavouriteStatus = async () => {
+            if (!user) {
+                return;
+            }
+            const favourites = await getFavourites(
+                user.username,
+                user.accessToken,
+            );
+
+            const isAlreadyFavourite = favourites.some(
+                (movie: Partial<MovieDetailsObj>) => {
+                    return movie.tmdbID === props.tmdbID;
+                },
+            );
+
+            setFavouriteOrNot(isAlreadyFavourite);
+        };
+
+        checkFavouriteStatus();
+    }, [props.tmdbID, user]);
+
     const handleFavourites = async () => {
         try {
             if (!user) {
                 return;
             }
-            const added = await addFavourite(
-                props.tmdbID,
-                user?.username,
-                user?.accessToken,
-            );
-            setFavouriteOrNot(added);
+            if (!favouriteOrNot) {
+                const added = await addFavourite(
+                    props.tmdbID,
+                    user?.username,
+                    user?.accessToken,
+                );
+                setFavouriteOrNot(added);
+            } else {
+                const removed = await removeFavourite(
+                    props.tmdbID,
+                    user.username,
+                    user.accessToken,
+                );
+                setFavouriteOrNot(removed);
+            }
         } catch (error) {
             console.log(error);
         }

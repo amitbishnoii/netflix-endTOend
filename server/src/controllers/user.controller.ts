@@ -86,13 +86,48 @@ export const addFavourite = async (
     }
 };
 
+export const removeFavourite = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const user = await User.findOne({
+            username: String(req.params.username),
+        }).select("username favouriteMovies");
+        if (!user) {
+            return next(new AppError("User not Found", 404));
+        }
+
+        const movie = await Movie.findOne({ tmdbID: req.body.tmdbID });
+        if (!movie) {
+            return next(new AppError("Movie not Found", 404));
+        }
+
+        user.favouriteMovies = user.favouriteMovies.filter((favouriteMovie) => {
+            return favouriteMovie.toString() !== movie._id.toString();
+        });
+
+        await user.save();
+
+        res.status(200).send({
+            success: true,
+            message: "Movie removed from favourites",
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const getFavourites = async (
     req: Request,
     res: Response,
     next: NextFunction,
 ) => {
     try {
-        const movies = await User.findOne({username: String(req.params.username)})
+        const movies = await User.findOne({
+            username: String(req.params.username),
+        })
             .select("favouriteMovies")
             .populate("favouriteMovies");
         if (!movies) {
