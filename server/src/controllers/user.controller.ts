@@ -11,9 +11,8 @@ export const getUser = async (
 ) => {
     try {
         const username = String(req.params.username);
-        const filter: Partial<IUser> = { username };
-        const user = await User.findOne(filter)
-            .populate("favouriteMovies.movie", "name year")
+        const user = await User.findOne({ username })
+            .populate("favouriteMovies", "name year")
             .select("-password -email -role");
 
         if (!user) {
@@ -33,9 +32,8 @@ export const updateUser = async (
 ) => {
     try {
         const username = String(req.params.username);
-        const filter: Partial<IUser> = { username };
         const updatedUser = await User.findOneAndUpdate(
-            filter,
+            { username },
             { age: req.body.age },
             { returnDocument: "after", runValidators: true },
         );
@@ -94,11 +92,9 @@ export const getFavourites = async (
     next: NextFunction,
 ) => {
     try {
-        const movies = await User.findOne({
-            username: req.body.username,
-        })
+        const movies = await User.findOne({username: String(req.params.username)})
             .select("favouriteMovies")
-            .populate("favouriteMovies.movie");
+            .populate("favouriteMovies");
         if (!movies) {
             res.status(404).send({
                 success: false,

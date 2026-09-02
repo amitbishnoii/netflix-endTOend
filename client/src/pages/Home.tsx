@@ -1,4 +1,5 @@
 import MovieCard from "@/components/MovieCard";
+import MovieGridSkeleton from "@/components/MovieGridSkeleton";
 import { getPopularMovies } from "@/services/movieApi";
 import { useEffect, useState } from "react";
 
@@ -28,16 +29,13 @@ const Home = () => {
                         <MovieCard
                             key={movie.id}
                             movieTitle={movie.title}
-                            movieInfo={movie.overview}
                             movieID={movie.id}
                             imgUrl={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                         />
                     ))}
                 </div>
             ) : (
-                <p className="text-zinc-400 text-sm">
-                    Loading Popular Movies...
-                </p>
+                <MovieGridSkeleton />
             )}
         </div>
     );

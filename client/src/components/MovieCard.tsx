@@ -2,12 +2,10 @@ import { useNavigate } from "react-router-dom";
 
 const MovieCard = ({
     movieTitle,
-    movieInfo,
     imgUrl,
     movieID,
 }: {
     movieTitle: string;
-    movieInfo: string;
     imgUrl: string;
     movieID: number;
 }) => {
@@ -51,14 +49,6 @@ const MovieCard = ({
                 <h3 className="text-white text-sm font-semibold leading-tight line-clamp-2">
                     {movieTitle}
                 </h3>
-
-                <p
-                    className="text-zinc-300 text-xs mt-1 line-clamp-3 max-h-0 opacity-0 
-                              group-hover:max-h-20 group-hover:opacity-100 
-                              transition-all duration-300 ease-out"
-                >
-                    {movieInfo}
-                </p>
             </div>
 
             <div

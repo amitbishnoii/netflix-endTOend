@@ -1,11 +1,12 @@
 import type { MovieDetailsObj } from "@/pages/MoviePage";
-import { addFavourite, getMovieReviews } from "@/services/movieApi";
+import { getMovieReviews } from "@/services/movieApi";
 import { ArrowRight, Heart, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import Reviews from "./Reviews";
 import { useNavigate } from "react-router-dom";
 import Overview from "./Overview";
 import { useAuth } from "@/hooks/useAuth";
+import { addFavourite } from "@/services/userApi";
 
 type Tab = "Overview" | "Reviews";
 
@@ -63,8 +64,6 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
     }, [currentTab]);
 
     const handleFavourites = async () => {
-        console.log(user);
-
         try {
             if (!user) {
                 return;
