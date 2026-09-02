@@ -18,10 +18,9 @@ export const addFavourite = async (
             },
             { headers: { Authorization: `Bearer ${accessToken}` } },
         );
-
         return favourite.data.success;
     } catch (error) {
-        throw new Error(getErrorMessage(error));
+        throw new Error(getErrorMessage(error), {cause: error});
     }
 };
 
@@ -35,10 +34,9 @@ export const removeFavourite = async (
             data: { tmdbID: movieID },
             headers: { Authorization: `Bearer ${accessToken}` },
         });
-        console.log(removed.data.success);
         return removed.data.success;
     } catch (error) {
-        throw new Error(getErrorMessage(error));
+        throw new Error(getErrorMessage(error), {cause: error});
     }
 };
 
@@ -49,6 +47,6 @@ export const getFavourites = async (username: string, accessToken: string) => {
         });
         return favouriteMovies.data.favourites;
     } catch (error) {
-        throw new Error(getErrorMessage(error));
+        throw new Error(getErrorMessage(error), {cause: error});
     }
 };

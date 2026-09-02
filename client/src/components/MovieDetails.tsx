@@ -95,19 +95,19 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
                 return;
             }
             if (!favouriteOrNot) {
-                const added = await addFavourite(
+                await addFavourite(
                     props.tmdbID,
                     user?.username,
                     user?.accessToken,
                 );
-                setFavouriteOrNot(added);
+                setFavouriteOrNot(true);
             } else {
-                const removed = await removeFavourite(
+                await removeFavourite(
                     props.tmdbID,
                     user.username,
                     user.accessToken,
                 );
-                setFavouriteOrNot(removed);
+                setFavouriteOrNot(false);
             }
         } catch (error) {
             console.log(error);
