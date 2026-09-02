@@ -6,7 +6,7 @@ interface IUser extends mongoose.Document {
     email: string;
     birthday: string;
     role: "admin" | "user";
-    favouriteMovies: { movie: Types.ObjectId }[];
+    favouriteMovies: Types.ObjectId[];
 }
 
 const userSchema = new mongoose.Schema<IUser>({

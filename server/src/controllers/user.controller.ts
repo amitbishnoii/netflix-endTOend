@@ -58,33 +58,31 @@ export const addFavourite = async (
     try {
         const movie = await Movie.findOne({ tmdbID: Number(req.body.tmdbID) });
         const username = String(req.params.username);
-        const filter: Partial<IUser> = { username };
-        const user = await User.findOne(filter).select(
+        const user = await User.findOne({ username }).select(
             "username favouriteMovies",
         );
 
         if (!movie) {
-            return next(new AppError("Movie not Found", 404));
+            return next(new AppError("Movie not found", 404));
         }
-
         if (!user) {
-            return next(new AppError("User not Found", 404));
+            return next(new AppError("User not found", 404));
         }
 
-        const alreadyFavourite = user.favouriteMovies.some((obj) => {
-            return obj.movie.toString() === movie._id.toString();
-        });
+        const alreadyFavourite = user.favouriteMovies.some(
+            (id) => id.toString() === movie._id.toString(),
+        );
 
         if (alreadyFavourite) {
-            return next(
-                new AppError("Movie already exists in favourites.", 400),
-            );
+            return res
+                .status(200)
+                .send({ success: true, message: "Movie already favourite" });
         }
 
         user.favouriteMovies.push(movie._id);
         await user.save();
 
-        res.status(200).send({ success: true, user });
+        return res.status(200).send({ success: true, user });
     } catch (error) {
         next(error);
     }

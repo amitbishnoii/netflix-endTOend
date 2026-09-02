@@ -44,6 +44,17 @@ const App = () => {
                     }
                 />
                 <Route
+                    path="/"
+                    element={
+                        <>
+                            <Navbar />
+                            <Suspense fallback={<PageSkeleton />}>
+                                <Home />
+                            </Suspense>
+                        </>
+                    }
+                />
+                <Route
                     path="/movie/:movieID"
                     element={
                         <ProtectedRoute>

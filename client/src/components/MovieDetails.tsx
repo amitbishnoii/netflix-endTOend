@@ -1,6 +1,6 @@
 import type { MovieDetailsObj } from "@/pages/MoviePage";
 import { addFavourite, getMovieReviews } from "@/services/movieApi";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight, Heart, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import Reviews from "./Reviews";
 import { useNavigate } from "react-router-dom";
@@ -69,12 +69,12 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
             if (!user) {
                 return;
             }
-            const favourite = await addFavourite(
+            const added = await addFavourite(
                 props.tmdbID,
                 user?.username,
                 user?.accessToken,
             );
-            setFavouriteOrNot(favourite);
+            setFavouriteOrNot(added);
         } catch (error) {
             console.log(error);
         }
@@ -103,32 +103,53 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
                 </div>
             </div>
 
-            <div
-                className="
-    mb-5 w-40 h-12 bg-white text-black rounded-xl
-    flex justify-center items-center gap-2
-    font-bold group
-    transition-all duration-300 ease-out
-    hover:w-44 hover:shadow-lg cursor-pointer hover:bg-gray-300
-  "
-            >
-                <button
-                    onClick={() => navigate(`/stream/${props.tmdbID}`)}
-                    className="cursor-pointer"
-                >
-                    Watch for Free
-                </button>
-                <span
+            <div className="flex gap-3 mb-5">
+                <div
                     className="
-      opacity-0 -translate-x-2
-      group-hover:opacity-100 group-hover:translate-x-0
-      transition-all duration-300 cursor-pointer
-    "
+            w-40 h-12 bg-white text-black rounded-xl
+            flex justify-center items-center gap-2
+            font-bold group
+            transition-all duration-300 ease-out
+            hover:w-44 hover:shadow-lg cursor-pointer hover:bg-gray-300
+        "
                 >
-                    <ArrowRight size={20} />
-                </span>
+                    <button
+                        onClick={() => navigate(`/stream/${props.tmdbID}`)}
+                        className="cursor-pointer"
+                    >
+                        Watch for Free
+                    </button>
+                    <span
+                        className="
+                opacity-0 -translate-x-2
+                group-hover:opacity-100 group-hover:translate-x-0
+                transition-all duration-300 cursor-pointer
+            "
+                    >
+                        <ArrowRight size={20} />
+                    </span>
+                </div>
+
+                <button
+                    onClick={handleFavourites}
+                    className={`
+            w-12 h-12 rounded-xl flex justify-center items-center
+            border transition-all duration-300 ease-out cursor-pointer
+            ${
+                favouriteOrNot
+                    ? "bg-white/10 border-white/40 text-red-500"
+                    : "bg-transparent border-white/20 text-white hover:border-white/40 hover:bg-white/5"
+            }
+        `}
+                >
+                    <Heart
+                        size={20}
+                        className={
+                            favouriteOrNot ? "fill-red-500" : "fill-none"
+                        }
+                    />
+                </button>
             </div>
-            <button onClick={handleFavourites}>Add to Favourites</button>
 
             <div className="flex gap-8 border-b-2 border-white/20 mb-3">
                 {(["Overview", "Reviews"] as Tab[]).map((tab) => {
