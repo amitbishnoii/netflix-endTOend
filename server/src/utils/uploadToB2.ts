@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { createReadStream } from "fs";
 import B2Client from "./B2Client.js";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import config from "../config/config.js";
@@ -8,8 +8,10 @@ const uploadToB2 = async (
     bucketKey: string,
     contentType: string,
 ) => {
-    const fileBuffer = readFileSync(localFilePath);
+    const fileBuffer = createReadStream(localFilePath);
+    console.log("reading buffer: ", fileBuffer);
 
+    console.log("uploading files");
     await B2Client.send(
         new PutObjectCommand({
             Bucket: config.B2_BUCKET_NAME,

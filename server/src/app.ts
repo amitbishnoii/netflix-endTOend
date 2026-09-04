@@ -7,6 +7,7 @@ import connectDB from "./config/db.js";
 import userRouter from "./routes/users.route.js";
 import authRouter from "./routes/auth.route.js";
 import cors from "cors";
+import adminRouter from "./routes/admin.route.js";
 
 const app = express();
 
@@ -14,12 +15,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(cors());
-app.use("/hls-test", express.static(path.join(__dirname, "../public/hls-test")));
 app.use(express.json());
 connectDB();
 app.use("/api/movies", movieRouter);
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/admin", adminRouter);
 app.use(errorHandler);
 
 export default app;
