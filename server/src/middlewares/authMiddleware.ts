@@ -13,11 +13,13 @@ export const authMiddleware = (
         const headerAuth = req.headers.authorization;
 
         if (!headerAuth || !headerAuth.startsWith("Bearer ")) {
+            console.log("token is missing", headerAuth);
             return next(new AppError("Token is missing!", 401));
         }
 
         let token = headerAuth.split(" ")[1];
         if (typeof token !== "string") {
+            console.log("invalid token");
             return next(new AppError("Invalid Token", 401));
         }
         const decoded = jwt.verify(token, config.jwtAccessSecret);
@@ -28,6 +30,7 @@ export const authMiddleware = (
         };
         next();
     } catch (error) {
+        console.log("expired token");
         return next(new AppError("Invalid or expired token.", 401));
     }
 };
