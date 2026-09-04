@@ -46,19 +46,19 @@ const AddPage = () => {
     };
 
     return (
-        <div className="max-w-md space-y-4">
+        <div className="max-w-md space-y-4 p-6 rounded-2xl bg-[#0b0d12] border border-white/10">
             <div className="flex gap-2">
                 <input
                     type="number"
                     placeholder="TMDB ID"
                     value={tmdbID}
                     onChange={(e) => setTmdbID(Number(e.target.value))}
-                    className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white outline-none focus:border-white/30 transition-colors"
+                    className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white outline-none focus:border-fuchsia-400/60 transition-colors"
                 />
                 <button
                     disabled={loading}
                     onClick={handleFetch}
-                    className="px-4 py-2 rounded-lg bg-white/10 border border-white/10 text-sm font-medium text-white hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                    className="px-4 py-2 rounded-lg bg-green-500 border border-white/10 text-sm font-medium text-white hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
                 >
                     {loading ? "Getting..." : "Get Movie"}
                 </button>
@@ -71,19 +71,19 @@ const AddPage = () => {
                         placeholder="720p URL"
                         value={streamUrlHD}
                         onChange={(e) => setStreamUrlHD(e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white outline-none focus:border-white/30 transition-colors"
+                        className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white outline-none focus:border-fuchsia-400/60 transition-colors"
                     />
                     <input
                         type="text"
                         placeholder="480p URL"
                         value={streamUrlSD}
                         onChange={(e) => setStreamUrlSD(e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white outline-none focus:border-white/30 transition-colors"
+                        className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white outline-none focus:border-fuchsia-400/60 transition-colors"
                     />
                     <button
                         disabled={loading}
                         onClick={handleAdd}
-                        className="w-full px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
+                        className="w-full px-4 py-2 rounded-lg bg-fuchsia-600 text-white text-sm font-semibold hover:bg-fuchsia-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-colors"
                     >
                         {loading ? "Adding..." : "Add Movie"}
                     </button>

@@ -66,15 +66,12 @@ export const updateMovie = async (
 ) => {
     try {
         const { movieID } = req.params;
-        console.log("got a request to update the movie: ", req.body);
 
         const movie = await Movie.findOneAndUpdate(
             { tmdbID: Number(movieID) },
             { $set: req.body },
             { returnDocument: "after", runValidators: true },
         );
-
-        console.log("movie updated: ", movie);
 
         if (!movie) {
             res.status(404).send({
@@ -86,7 +83,6 @@ export const updateMovie = async (
 
         res.status(200).send({ success: true, movie });
     } catch (error) {
-        console.log("error occured:", error);
         next(error);
     }
 };

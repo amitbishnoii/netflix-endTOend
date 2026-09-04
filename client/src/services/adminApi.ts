@@ -14,7 +14,10 @@ export const fetchMovieFromTMDB = async (
     return response.data.info.data;
 };
 
-export const addMovie = async (accessToken: string, data: any) => {
+export const addMovie = async (
+    accessToken: string,
+    data: Record<string, unknown>,
+) => {
     const response = await adminApi.post(
         "/add-movie",
         { movie: data },
@@ -35,6 +38,14 @@ export const updateMovie = async (
     updates: Record<string, string>,
 ) => {
     const response = await adminApi.patch(`/update/${movieID}`, updates, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log("response: ", response);
+};
+
+export const deleteMovie = async (movieID: number, accessToken: string) => {
+    console.log("got the request to delete movie");
+    const response = await adminApi.delete(`/delete/${movieID}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
     });
     console.log("response: ", response);
