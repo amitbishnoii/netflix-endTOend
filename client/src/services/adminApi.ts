@@ -23,5 +23,9 @@ export const addMovie = async (accessToken: string, data: any) => {
             headers: { Authorization: `Bearer ${accessToken}` },
         },
     );
-    console.log("response: ", response);
+    if (response.data.success) {
+        return true;
+    } else {
+        return false;
+    }
 };
