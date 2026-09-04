@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import { lazy, Suspense } from "react";
 import PageSkeleton from "./components/PageSkeleton";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminPage from "./pages/AdminPage";
 
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
@@ -49,7 +50,7 @@ const App = () => {
                         <>
                             <Navbar />
                             <Suspense fallback={<PageSkeleton />}>
-                                <Home />
+                                <AdminPage />
                             </Suspense>
                         </>
                     }
