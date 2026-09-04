@@ -15,7 +15,6 @@ export const fetchMovieFromTMDB = async (
 };
 
 export const addMovie = async (accessToken: string, data: any) => {
-    console.log("got request to create a movie with this data: ", data);
     const response = await adminApi.post(
         "/add-movie",
         { movie: data },
@@ -28,4 +27,15 @@ export const addMovie = async (accessToken: string, data: any) => {
     } else {
         return false;
     }
+};
+
+export const updateMovie = async (
+    movieID: number,
+    accessToken: string,
+    updates: Record<string, string>,
+) => {
+    const response = await adminApi.patch(`/update/${movieID}`, updates, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    console.log("response: ", response);
 };

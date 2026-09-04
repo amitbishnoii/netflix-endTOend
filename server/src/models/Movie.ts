@@ -16,8 +16,8 @@ interface IMovie extends Document {
     rating: number;
     ratingCount: number;
     reviews: { review: Schema.Types.ObjectId }[];
-    streamURL720?: string;
-    streamURL480?: string;
+    streamUrlHD?: string;
+    streamUrlSD?: string;
 }
 
 const movieSchema = new mongoose.Schema<IMovie>({
@@ -36,8 +36,8 @@ const movieSchema = new mongoose.Schema<IMovie>({
     rating: { type: Number, required: true },
     ratingCount: { type: Number, required: true },
     reviews: [{ type: Schema.Types.ObjectId, ref: "Reviews" }],
-    streamURL480: { type: String },
-    streamURL720: { type: String },
+    streamUrlHD: { type: String },
+    streamUrlSD: { type: String },
 });
 
 const Movie = mongoose.model<IMovie>("Movie", movieSchema);

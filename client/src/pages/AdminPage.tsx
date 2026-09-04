@@ -1,4 +1,5 @@
 import AddPage from "@/components/AddPage";
+import UpdatePage from "@/components/UpdatePage";
 import { useState } from "react";
 
 const AdminPage = () => {
@@ -44,6 +45,7 @@ const AdminPage = () => {
                 </div>
 
                 {currentAction === "add" && <AddPage />}
+                {currentAction === "update" && <UpdatePage />}
             </div>
         </div>
     );
