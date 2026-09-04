@@ -32,8 +32,9 @@ const LoginPage = () => {
             login({
                 username: response.data.userInfo.username,
                 accessToken: response.data.token,
+                role: response.data.userInfo.role,
             });
-            navigate("/");
+            navigate("/home");
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 setErrorInfo(error.response.data.error);

@@ -13,9 +13,13 @@ const DeletePage = () => {
         if (!movieID) return;
         try {
             setLoading(true);
-            await deleteMovie(movieID, user.accessToken);
+            const response = await deleteMovie(movieID, user.accessToken);
             setLoading(false);
-            setStatus("Deleted successfully");
+            if (response) {
+                setStatus("Deleted successfully");
+            } else {
+                setStatus("Deletion Failed!");
+            }
         } catch (error) {
             if (error instanceof Error) setStatus(error.message);
         }

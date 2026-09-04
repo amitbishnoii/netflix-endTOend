@@ -84,7 +84,7 @@ export const loginUser = async (
             { expiresIn: "7d" },
         );
         const { password: _, ...userInfo } = user.toObject();
-
+        console.log("userinfo", userInfo);
         res.status(200).send({ success: true, token, refreshToken, userInfo });
     } catch (error) {
         next(error);

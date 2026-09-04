@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import { lazy, Suspense } from "react";
 import PageSkeleton from "./components/PageSkeleton";
 import ProtectedRoute from "./components/ProtectedRoute";
-import AdminPage from "./pages/AdminPage";
+import AuthorizedRoute from "./components/AuthorizedRoute";
 
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
@@ -12,6 +12,7 @@ const Home = lazy(() => import("./pages/Home"));
 const Favourites = lazy(() => import("./pages/Favourites"));
 const MoviePage = lazy(() => import("./pages/MoviePage"));
 const StreamPage = lazy(() => import("./pages/StreamPage"));
+const AdminPage = lazy(() => import("./pages/AdminPage"));
 
 const App = () => {
     return (
@@ -45,14 +46,15 @@ const App = () => {
                     }
                 />
                 <Route
-                    path="/"
+                    path="/admin"
                     element={
-                        <>
-                            <Navbar />
-                            <Suspense fallback={<PageSkeleton />}>
-                                <AdminPage />
-                            </Suspense>
-                        </>
+                        <AuthorizedRoute>
+                            <ProtectedRoute>
+                                <Suspense fallback={<PageSkeleton />}>
+                                    <AdminPage />
+                                </Suspense>
+                            </ProtectedRoute>
+                        </AuthorizedRoute>
                     }
                 />
                 <Route

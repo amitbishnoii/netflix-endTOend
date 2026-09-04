@@ -4,6 +4,7 @@ import { AuthContext } from "./AuthContext.ts";
 type LoginData = {
     username: string;
     accessToken: string;
+    role: "admin" | "user";
 };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {

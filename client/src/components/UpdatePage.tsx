@@ -7,6 +7,8 @@ const UpdatePage = () => {
     const [title, setTitle] = useState<string>("");
     const [streamUrlHD, setStreamUrlHD] = useState<string>("");
     const [streamUrlSD, setStreamUrlSD] = useState<string>("");
+    const [loading, setLoading] = useState(false);
+    const [status, setStatus] = useState<string>();
     const { user } = useAuth();
 
     const handleUpdate = async () => {
@@ -20,7 +22,14 @@ const UpdatePage = () => {
         if (title) updates.title = title;
         if (streamUrlHD) updates.streamUrlHD = streamUrlHD;
         if (streamUrlSD) updates.streamUrlSD = streamUrlSD;
-        await updateMovie(movieID, user.accessToken, updates);
+        setLoading(true);
+        const info = await updateMovie(movieID, user.accessToken, updates);
+        setLoading(false);
+        if (info) {
+            setStatus("Movie Updated!");
+        } else {
+            setStatus("Updation Failed!");
+        }
     };
 
     return (
@@ -63,10 +72,12 @@ const UpdatePage = () => {
 
             <button
                 onClick={handleUpdate}
+                disabled={loading}
                 className="mt-1 px-4 py-2.5 rounded-lg font-semibold text-sm text-white bg-fuchsia-600 hover:bg-fuchsia-700 transition-colors"
             >
-                Update Movie
+                {loading ? "Updating..." : "Update Movie"}
             </button>
+            {status && <p>{status}</p>}
         </div>
     );
 };

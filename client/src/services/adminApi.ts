@@ -40,7 +40,11 @@ export const updateMovie = async (
     const response = await adminApi.patch(`/update/${movieID}`, updates, {
         headers: { Authorization: `Bearer ${accessToken}` },
     });
-    console.log("response: ", response);
+    if (response.data.success) {
+        return true;
+    } else {
+        return false;
+    }
 };
 
 export const deleteMovie = async (movieID: number, accessToken: string) => {
@@ -48,5 +52,9 @@ export const deleteMovie = async (movieID: number, accessToken: string) => {
     const response = await adminApi.delete(`/delete/${movieID}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
     });
-    console.log("response: ", response);
+    if (response.data.success) {
+        return true;
+    } else {
+        return false;
+    }
 };
