@@ -34,6 +34,9 @@ const LoginPage = () => {
                 accessToken: response.data.token,
                 role: response.data.userInfo.role,
             });
+            localStorage.setItem("username", response.data.userInfo.username);
+            localStorage.setItem("accessToken", response.data.token);
+            localStorage.setItem("role", response.data.userInfo.username);
             navigate("/home");
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {

@@ -8,6 +8,7 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
+    isLoading: boolean;
     login: (data: User) => void;
     logout: () => void;
 }
