@@ -4,7 +4,6 @@ const movieApi = axios.create({
     baseURL: "http://localhost:3000/api/movies",
 });
 
-
 export const getPopularMovies = async () => {
     const popularMovies = await movieApi.get("/popularMovies");
     return popularMovies.data.movies.data;

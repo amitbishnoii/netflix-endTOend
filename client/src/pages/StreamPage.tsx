@@ -12,7 +12,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const StreamPage = () => {    
+const StreamPage = () => {
     const { movieName } = useParams();
     const [isPlaying, setIsPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
@@ -132,21 +132,21 @@ const StreamPage = () => {
 
     return (
         <div
-            className="bg-black min-h-screen flex flex-col relative group overflow-hidden select-none"
+            className="bg-black min-h-svh h-svh flex flex-col relative group overflow-hidden select-none"
             onMouseOver={() => setShowControls(true)}
             onMouseOut={() => setShowControls(false)}
         >
             <button
                 onClick={() => navigate(-1)}
-                className={`absolute top-5 left-5 z-30 flex items-center gap-2 px-3.5 py-2.5 rounded-xl
+                className={`absolute top-4 left-4 sm:top-5 sm:left-5 z-30 flex items-center gap-2 px-3.5 py-2.5 rounded-xl
         bg-black/30 backdrop-blur-md border border-white/10
         text-white/80 hover:text-white hover:bg-white/10 hover:border-white/20
         shadow-lg shadow-black/20
         transition-all duration-300 ease-out cursor-pointer
         ${
             showControls
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-2 pointer-events-none"
+                ? "md:opacity-100 md:translate-y-0"
+                : "md:opacity-0 md:-translate-y-2 md:pointer-events-none"
         }`}
             >
                 <ArrowLeft size={18} strokeWidth={2} />
@@ -154,15 +154,15 @@ const StreamPage = () => {
             </button>
 
             <h1
-                className={`absolute top-6 left-1/2 -translate-x-1/2 z-20
+                className={`absolute top-5 sm:top-6 left-1/2 -translate-x-1/2 z-20
         max-w-[60%] truncate
-        text-white/90 text-3xl font-medium tracking-wide
+            text-white/90 text-xl sm:text-3xl font-medium tracking-wide
         drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]
         transition-all duration-300
         ${
             showControls
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-2"
+                ? "md:opacity-100 md:translate-y-0"
+                : "md:opacity-0 md:-translate-y-2"
         }`}
             >
                 {movieName}
@@ -210,16 +210,16 @@ const StreamPage = () => {
 
             <div
                 className={`absolute bottom-0 left-0 right-0 z-20
-        px-5 sm:px-7 pb-5 pt-20
+        px-3 sm:px-7 pb-4 sm:pb-5 pt-16 sm:pt-20
         bg-linear-to-t from-black via-black/80 to-transparent
         transition-all duration-500 ease-out
         ${
             showControls
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-3 pointer-events-none"
+                ? "opacity-100 translate-y-0 md:pointer-events-auto"
+                : "opacity-100 translate-y-0 md:opacity-0 md:translate-y-3 md:pointer-events-none"
         }`}
             >
-                <div className="relative w-full h-1.5 mb-5 group/bar">
+                <div className="relative w-full h-1.5 mb-4 sm:mb-5 group/bar">
                     <input
                         type="range"
                         min={0}
@@ -275,8 +275,8 @@ const StreamPage = () => {
                     />
                 </div>
 
-                <div className="flex items-center justify-between text-white">
-                    <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-3 text-white sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex min-w-0 items-center gap-2 sm:gap-4">
                         <button
                             onClick={togglePlay}
                             className="
@@ -367,10 +367,10 @@ const StreamPage = () => {
                         </span>
                     </div>
 
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex min-w-0 items-center justify-between gap-2.5 sm:justify-end">
                         <div
                             className="
-                        flex items-center gap-0.5
+                        flex max-w-[calc(100vw-5rem)] items-center gap-0.5 overflow-x-auto
                         bg-white/8
                         border border-white/10
                         rounded-xl
