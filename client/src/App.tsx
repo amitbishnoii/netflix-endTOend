@@ -69,7 +69,7 @@ const App = () => {
                     }
                 />
                 <Route
-                    path="/stream/:movieID"
+                    path="/stream/:movieName"
                     element={
                         <ProtectedRoute>
                             <Suspense fallback={<PageSkeleton />}>

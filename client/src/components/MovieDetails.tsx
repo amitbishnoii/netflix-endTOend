@@ -148,7 +148,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
         "
                 >
                     <button
-                        onClick={() => navigate(`/stream/${props.tmdbID}`)}
+                        onClick={() => navigate(`/stream/${props.title}`)}
                         className="cursor-pointer"
                     >
                         Watch for Free
