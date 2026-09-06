@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { LogOut, MoreVertical, Search } from "lucide-react";
+import { LogOut, MoreVertical } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 export default function Navbar() {
@@ -33,7 +33,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-100 w-[92vw] md:w-[85vw] lg:w-[70vw] max-w-7xl">
+        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-100 w-[90vw] md:w-[82vw] lg:w-[60vw] max-w-7xl">
             <div className="relative rounded-2xl border border-white/10 bg-[#0a0a0a]/70 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
                 <div className="absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-[#ff7a59]/40 to-transparent" />
                 <div className="px-4 sm:px-6">
@@ -75,19 +75,6 @@ export default function Navbar() {
                         </div>
 
                         <div className="flex items-center gap-2 sm:gap-3">
-                            <div
-                                className="flex items-center h-9 px-3 bg-white/5 border border-white/10 rounded-full transition-all
-                            w-9 sm:w-40 md:w-52 justify-center sm:justify-start
-                            focus-within:w-40 sm:focus-within:w-52 focus-within:border-[#ff7a59]/50"
-                            >
-                                <Search className="text-zinc-400 text-base shrink-0" />
-                                <input
-                                    type="text"
-                                    placeholder="Search"
-                                    className="hidden sm:block w-full ml-2 border-none outline-none bg-transparent text-zinc-100 text-sm placeholder:text-zinc-500"
-                                />
-                            </div>
-
                             {user !== null ? (
                                 <div className="relative">
                                     <Button
