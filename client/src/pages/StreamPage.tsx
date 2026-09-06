@@ -8,10 +8,9 @@ import {
     VolumeX,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const StreamPage = () => {
-    const { movieID } = useParams();
     const [isPlaying, setIsPlaying] = useState(false);
     const [duration, setDuration] = useState(0);
     const [elapsedTime, setElapsedTime] = useState(0);
@@ -28,7 +27,7 @@ const StreamPage = () => {
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const hlsRef = useRef<Hls | null>(null);
-    const streamURL = "http://localhost:3000/hs-test/master.m3u8";
+    const streamURL = "http://localhost:3000/api/movies/master";
     const navigate = useNavigate();
 
     useEffect(() => {

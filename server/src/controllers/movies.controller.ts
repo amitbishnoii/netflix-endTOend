@@ -100,19 +100,44 @@ export const streamFile = async (
     next: NextFunction,
 ) => {
     try {
-        const fileName =
-            "movies/mutiny/480p/480p.m3u8";
+        const { fileName, quality } = req.params;
+
+        const key = `movies/mutiny/${quality}/${fileName}`;
 
         const response = await B2Client.send(
             new GetObjectCommand({
                 Bucket: config.B2_BUCKET_NAME,
-                Key: fileName,
+                Key: key,
             }),
         );
 
-        console.log("response from stream: ", response);
+        res.setHeader(
+            "Content-Type",
+            response.ContentType || "application/octet-stream",
+        );
+        (response.Body as NodeJS.ReadableStream).pipe(res);
     } catch (error) {
         console.log("error: ", error);
+        next(error);
+    }
+};
+
+export const getMaster = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const key = "movies/mutiny/master.m3u8";
+        const response = await B2Client.send(
+            new GetObjectCommand({
+                Bucket: config.B2_BUCKET_NAME,
+                Key: key,
+            }),
+        );
+        res.setHeader("Content-Type", "application/vnd.apple.mpegurl");
+        (response.Body as NodeJS.ReadableStream).pipe(res);
+    } catch (error) {
         next(error);
     }
 };
