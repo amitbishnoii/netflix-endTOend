@@ -58,8 +58,9 @@ const fetchWithRetires = async (
 
 export const fetchPopularMovies = async (): Promise<ServiceResult<any>> => {
     try {
-        const response = await tmdbApi.get("/movie/popular");
-        return { success: true, data: response.data.results };
+        const response = await Movie.find();
+        console.log("results: ", response);
+        return { success: true, data: response };
     } catch (error) {
         return errorRes(error);
     }
