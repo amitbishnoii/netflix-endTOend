@@ -4,7 +4,7 @@ const PosterSection = ({ posterUrl }: { posterUrl: string | undefined }) => {
     const [loaded, setLoaded] = useState(false);
 
     return (
-        <div className="relative w-150 h-187.5 rounded-2xl overflow-hidden border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.6)]">
+        <div className="relative aspect-4/5 w-full max-w-150 rounded-2xl overflow-hidden border border-white/10 shadow-[0_25px_60px_rgba(0,0,0,0.6)] sm:w-120 lg:w-150">
             {!loaded && (
                 <div className="absolute inset-0 animate-pulse bg-zinc-800" />
             )}

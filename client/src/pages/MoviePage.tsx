@@ -38,7 +38,7 @@ const MoviePage = () => {
     }, []);
 
     return (
-        <div className="pt-24 pl-24 min-h-screen w-full bg-black text-white flex gap-24">
+        <div className="min-h-screen w-full bg-black px-4 pt-20 pb-3 text-white flex flex-col gap-10 sm:px-8 sm:pt-24 lg:flex-row lg:gap-24 lg:pl-24">
             {movieInfo ? (
                 <>
                     <PosterSection posterUrl={movieInfo.posterPath} />

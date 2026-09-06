@@ -115,36 +115,40 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
     };
 
     return (
-        <div className="main w-full pr-20 flex flex-col">
-            <div className="title flex justify-between mb-6">
-                <div className="flex flex-col gap-4">
-                    <h1 className="text-6xl">{props.title}</h1>
-                    <span className="text-[14px] text-gray-500 ml-2">
-                        {props.releaseDate?.slice(0, 4)} &nbsp;&nbsp; |
-                        &nbsp;&nbsp; {hours}h {minutes}
-                        min &nbsp;&nbsp; | &nbsp;&nbsp; {props.ratingCount}{" "}
-                        Ratings
+        <div className="main min-w-0 w-full flex-1 pr-0 flex flex-col">
+            <div className="title flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6">
+                <div className="min-w-0 flex flex-col gap-2 sm:gap-4">
+                    <h1 className="wrap-break-word text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
+                        {props.title}
+                    </h1>
+                    <span className="text-xs text-gray-500 sm:text-[14px] sm:ml-2">
+                        {props.releaseDate?.slice(0, 4)}{" "}
+                        <span className="mx-1">|</span>
+                        {hours}h {minutes}min <span className="mx-1">|</span>
+                        <span className="hidden sm:inline">
+                            {props.ratingCount} Ratings
+                        </span>
                     </span>
                 </div>
 
-                <div className="flex items-center flex-col gap-1 mt-2">
+                <div className="flex items-center gap-1 self-start sm:mt-2 sm:self-auto">
                     <div className="flex items-center gap-1">
-                        <span className="text-4xl">
+                        <span className="text-3xl sm:text-4xl">
                             {props.rating.toFixed(1)}
                         </span>
-                        <Star className="w-7 h-7 fill-yellow-400 text-yellow-400" />
+                        <Star className="h-6 w-6 fill-yellow-400 text-yellow-400 sm:h-7 sm:w-7" />
                     </div>
                 </div>
             </div>
 
-            <div className="flex gap-3 mb-5">
+            <div className="flex flex-wrap gap-3 mb-5">
                 <div
                     className="
-            w-40 h-12 bg-white text-black rounded-xl
+            h-12 w-40 max-w-full bg-white text-black rounded-xl
             flex justify-center items-center gap-2
             font-bold group
             transition-all duration-300 ease-out
-            hover:w-44 hover:shadow-lg cursor-pointer hover:bg-gray-300
+            hover:shadow-lg cursor-pointer hover:bg-gray-300
         "
                 >
                     <button
@@ -167,7 +171,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
                 <button
                     onClick={handleFavourites}
                     className={`
-            w-12 h-12 rounded-xl flex justify-center items-center
+            h-12 w-12 shrink-0 rounded-xl flex justify-center items-center
             border transition-all duration-300 ease-out cursor-pointer
             ${
                 favouriteOrNot
@@ -185,7 +189,7 @@ const MovieDetails = (props: Omit<MovieDetailsObj, "posterPath">) => {
                 </button>
             </div>
 
-            <div className="flex gap-8 border-b-2 border-white/20 mb-3">
+            <div className="flex gap-6 border-b-2 border-white/20 mb-3 sm:gap-8">
                 {(["Overview", "Reviews"] as Tab[]).map((tab) => {
                     return (
                         <button
