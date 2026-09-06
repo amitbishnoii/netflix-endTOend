@@ -33,7 +33,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92vw] md:w-[85vw] lg:w-[70vw] max-w-7xl">
+        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-100 w-[92vw] md:w-[85vw] lg:w-[70vw] max-w-7xl">
             <div className="relative rounded-2xl border border-white/10 bg-[#0a0a0a]/70 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
                 <div className="absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-[#ff7a59]/40 to-transparent" />
                 <div className="px-4 sm:px-6">
@@ -44,32 +44,34 @@ export default function Navbar() {
                                 <span className="text-[#ff7a59]">.App</span>
                             </h2>
 
-                            <div className="hidden sm:flex items-center gap-1">
-                                <NavLink
-                                    to="/home"
-                                    className={({ isActive }) =>
-                                        `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                                            isActive
-                                                ? "text-white bg-white/10"
-                                                : "text-zinc-400 hover:text-white hover:bg-white/5"
-                                        }`
-                                    }
-                                >
-                                    Home
-                                </NavLink>
-                                <NavLink
-                                    to="/favourites"
-                                    className={({ isActive }) =>
-                                        `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                                            isActive
-                                                ? "text-white bg-white/10"
-                                                : "text-zinc-400 hover:text-white hover:bg-white/5"
-                                        }`
-                                    }
-                                >
-                                    Favourites
-                                </NavLink>
-                            </div>
+                            {user && (
+                                <div className="sm:flex items-center gap-1">
+                                    <NavLink
+                                        to="/home"
+                                        className={({ isActive }) =>
+                                            `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                                                isActive
+                                                    ? "text-white bg-white/10"
+                                                    : "text-zinc-400 hover:text-white hover:bg-white/5"
+                                            }`
+                                        }
+                                    >
+                                        Home
+                                    </NavLink>
+                                    <NavLink
+                                        to="/favourites"
+                                        className={({ isActive }) =>
+                                            `px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                                                isActive
+                                                    ? "text-white bg-white/10"
+                                                    : "text-zinc-400 hover:text-white hover:bg-white/5"
+                                            }`
+                                        }
+                                    >
+                                        Favourites
+                                    </NavLink>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex items-center gap-2 sm:gap-3">

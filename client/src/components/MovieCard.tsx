@@ -19,6 +19,34 @@ const MovieCard = ({
             className="group relative rounded-xl overflow-hidden bg-zinc-900 border border-white/10 
                         aspect-2/3 transition-transform duration-300 hover:-translate-y-1"
         >
+            <button
+                type="button"
+                onClick={handleClick}
+                className="
+        absolute top-2 right-2 z-50
+        sm:hidden
+
+        px-3 py-1.5
+        rounded-full
+
+        text-[11px] font-semibold
+        uppercase tracking-wide
+        text-white
+
+        bg-black/55
+        backdrop-blur-md
+        border border-white/15
+
+        shadow-lg shadow-black/30
+
+        active:scale-95
+        active:bg-violet-600/80
+
+        transition-all duration-200
+    "
+            >
+                Watch
+            </button>
             <img
                 src={imgUrl}
                 alt={movieTitle}
