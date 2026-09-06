@@ -8,6 +8,9 @@ import {
     fetchDetails,
     fetchReviews,
 } from "../services/tmdb.js";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import config from "../config/config.js";
+import B2Client from "../utils/B2Client.js";
 
 export const getPopularMovies = async (req: Request, res: Response) => {
     try {
@@ -88,5 +91,28 @@ export const getReviews = async (req: Request, res: Response) => {
             message: err.message,
             cause: err.cause,
         });
+    }
+};
+
+export const streamFile = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const fileName =
+            "movies/mutiny/480p/480p.m3u8";
+
+        const response = await B2Client.send(
+            new GetObjectCommand({
+                Bucket: config.B2_BUCKET_NAME,
+                Key: fileName,
+            }),
+        );
+
+        console.log("response from stream: ", response);
+    } catch (error) {
+        console.log("error: ", error);
+        next(error);
     }
 };
