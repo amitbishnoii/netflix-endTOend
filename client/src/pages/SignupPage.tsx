@@ -31,17 +31,18 @@ const SignupPage = () => {
     const handleSignup = async (data: SignupPageData) => {
         try {
             const response = await axios.post(
-                "http://localhost:3000/api/auth/signup",
+                `${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`,
                 {
                     username: data.username,
                     password: data.password,
                     email: data.email,
                     birthday: data.birthday,
                 },
-            );            
+            );
             login({
                 username: response.data.data.username,
                 accessToken: response.data.token,
+                role: "user",
             });
             navigate("/home");
         } catch (err) {

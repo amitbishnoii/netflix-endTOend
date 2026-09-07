@@ -25,7 +25,7 @@ const LoginPage = () => {
     const formSubmitHandler = async (data: LoginFormData) => {
         try {
             const response = await axios.post(
-                "http://localhost:3000/api/auth/login",
+                `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
                 data,
             );
             localStorage.setItem("refresh-token", response.data.refreshToken);

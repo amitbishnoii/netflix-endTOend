@@ -2,7 +2,7 @@ import getErrorMessage from "@/utils/errorMessage";
 import axios from "axios";
 
 const userApi = axios.create({
-    baseURL: "http://localhost:3000/api/users",
+    baseURL: `${import.meta.env.VITE_API_BASE_URL}/api/users`,
 });
 
 export const addFavourite = async (
