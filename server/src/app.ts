@@ -8,6 +8,7 @@ import userRouter from "./routes/users.route.js";
 import authRouter from "./routes/auth.route.js";
 import cors from "cors";
 import adminRouter from "./routes/admin.route.js";
+import { loggerMiddleware } from "./middlewares/loggerMiddleware.js";
 
 const app = express();
 
@@ -17,6 +18,7 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 connectDB();
+app.use(loggerMiddleware);
 app.get("/ping", (req, res) => {
     res.status(200).send("pinged!");
 });
