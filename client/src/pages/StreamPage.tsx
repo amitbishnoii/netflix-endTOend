@@ -31,7 +31,7 @@ const StreamPage = () => {
 
     const videoRef = useRef<HTMLVideoElement>(null);
     const hlsRef = useRef<Hls | null>(null);
-    const streamURL = "http://localhost:3000/api/movies/master";
+    const streamURL = `${import.meta.env.VITE_API_BASE_URL}/api/movies/master`;
     const navigate = useNavigate();
 
     useEffect(() => {
