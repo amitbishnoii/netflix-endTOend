@@ -17,6 +17,9 @@ const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 connectDB();
+app.get("/ping", (req, res) => {
+    res.status(200).send("pinged!");
+});
 app.use("/api/movies", movieRouter);
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
