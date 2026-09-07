@@ -17,6 +17,7 @@ const Home = () => {
     const [searchQuery, setSearchQuery] = useState<string>("");
 
     useEffect(() => {
+        document.title = "Home";
         const fetchMovies = async () => {
             const moviesData = await getPopularMovies();
             setMovies(moviesData);

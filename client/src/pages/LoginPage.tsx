@@ -2,7 +2,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../hooks/useAuth.ts";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FormInput from "@/components/FormInputField.tsx";
 import { usePasswordToggle } from "@/hooks/usePasswordToggle.ts";
 
@@ -21,6 +21,10 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const [errorInfo, setErrorInfo] = useState<string>();
     const showPassword = usePasswordToggle();
+
+    useEffect(() => {
+        document.title = "Login";
+    }, []);
 
     const formSubmitHandler = async (data: LoginFormData) => {
         try {

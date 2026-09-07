@@ -35,6 +35,7 @@ const StreamPage = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        document.title = `Streaming ${movieName}`;
         if (!videoRef.current) return;
         const hls = new Hls();
 

@@ -32,6 +32,7 @@ const MoviePage = () => {
         const fetchDetails = async () => {
             const movieInfo = await getMovieDetails(Number(params.movieID));
             setMovieInfo(movieInfo);
+            document.title = movieInfo.title || "Movie";
         };
 
         fetchDetails();

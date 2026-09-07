@@ -10,6 +10,7 @@ const Favourites = () => {
     const [favouriteMovies, setFavouriteMovies] = useState<MovieDetailsObj[]>();
 
     useEffect(() => {
+        document.title = "Favourites";
         if (!user) {
             return;
         }

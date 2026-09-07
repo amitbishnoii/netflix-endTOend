@@ -1,12 +1,16 @@
 import AddPage from "@/components/AddPage";
 import DeletePage from "@/components/DeletePage";
 import UpdatePage from "@/components/UpdatePage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const AdminPage = () => {
     type AdminActions = "update" | "add" | "delete" | null;
     const [currentAction, setCurrentAction] = useState<AdminActions>(null);
 
+    useEffect(() => {
+        document.title = "Admin Page";
+    }, []);
+    
     return (
         <div>
             <div className="min-h-screen w-full bg-[#0b0d12] text-white pt-24 px-8 pb-12">

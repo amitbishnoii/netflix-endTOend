@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import FormInput from "../components/FormInputField";
 import { usePasswordToggle } from "../hooks/usePasswordToggle";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface SignupPageData {
     username: string;
@@ -27,6 +27,10 @@ const SignupPage = () => {
     const passwordMatch = watch("password");
     const navigate = useNavigate();
     const [error, setError] = useState<string>();
+
+    useEffect(() => {
+        document.title = "Create your Account";
+    }, []);
 
     const handleSignup = async (data: SignupPageData) => {
         try {

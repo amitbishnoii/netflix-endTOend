@@ -19,6 +19,17 @@ const App = () => {
         <AuthProvider>
             <Routes>
                 <Route
+                    path="/"
+                    element={
+                        <>
+                            <Navbar />
+                            <Suspense fallback={<PageSkeleton />}>
+                                <Home />
+                            </Suspense>
+                        </>
+                    }
+                />
+                <Route
                     path="/signup"
                     element={
                         <Suspense fallback={<PageSkeleton />}>
